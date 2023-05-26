@@ -1,0 +1,32 @@
+{
+  "name": "captain-hooks",
+  "version": "1.0.0",
+  "description": "Contributors: dbeja Requires at least: 4.7 Tested up to: 5.5.1 Requires PHP: 5.6",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --watch --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbkode/captainhooks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dbkode/quick-admin-launcher/issues"
+  },
+  "homepage": "https://github.com/dbkode/quick-admin-launcher#readme",
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "alpinejs": "^3.12.0",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.7.3",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.2",
+    "style-loader": "^3.3.2",
+    "webpack": "^5.76.3",
+    "webpack-cli": "^5.0.1"
+  }
+}

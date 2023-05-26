@@ -1,0 +1,26 @@
+# Items to ignore when downloading a zip
+
+# GitHub
+.gitignore            export-ignore
+.gitattributes        export-ignore
+/.github/             export-ignore
+
+# Packages / Dependencies
+package.json          export-ignore
+package-lock.json     export-ignore
+composer.json         export-ignore
+composer.lock         export-ignore
+/vendor/              export-ignore
+babel.config.json     export-ignore
+webpack.config.js     export-ignore
+
+# Project specific
+/.wordpress-org/      export-ignore
+/src/                 export-ignore
+
+# Tests / Other
+/tests/               export-ignore
+phpunit.xml           export-ignore
+README.md             export-ignore
+.editorconfig         export-ignore
+.DS_Store*            export-ignore
