@@ -93,7 +93,7 @@
 									<ul>
 										<template captainhooks-for="usage in filter.usages">
 											<li>
-												<span captainhooks-text="usage.file_path"></span>: <span captainhooks-text="usage.line"></span>
+												<span captainhooks-text="usage.file_path"></span>:<span captainhooks-text="usage.line_number"></span> <span captainhooks-text="usage.line"></span>
 											</li>
 										</template>
 									</ul>

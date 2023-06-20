@@ -6,10 +6,16 @@
             "email": "david.beja@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "CAPTAINHOOKS\\": "includes/"
+        }
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
         "wp-coding-standards/wpcs": "^2.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpunit/phpunit": "^9.6"
     },
     "config": {
         "allow-plugins": {
@@ -19,6 +25,10 @@
     "scripts": {
         "lint": [
             "./vendor/bin/phpcs --standard=WordPress --extensions=php -d error_reporting='E_ALL&~E_DEPRECATED' --ignore=vendor ."
-        ]
+        ],
+        "test": "./vendor/bin/phpunit"
+    },
+    "require": {
+        "nikic/php-parser": "^4.15"
     }
 }

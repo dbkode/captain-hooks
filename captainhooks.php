@@ -15,7 +15,7 @@ define( 'CAPTAINHOOKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CAPTAINHOOKS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CAPTAINHOOKS_VERSION', '1.0.0' );
 
-require_once CAPTAINHOOKS_PLUGIN_DIR . '/includes/autoload.php';
+require_once CAPTAINHOOKS_PLUGIN_DIR . '/vendor/autoload.php';
 
 register_activation_hook( __FILE__, 'captainhooks_activate' );
 register_deactivation_hook( __FILE__, 'captainhooks_deactivate' );
