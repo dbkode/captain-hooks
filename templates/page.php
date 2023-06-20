@@ -65,11 +65,11 @@
 						<template captainhooks-for="(action, actionIndex) in actions_filtered">
 							<li>
 								<a href="" captainhooks-on:click.prevent="toggleHook('actions', actionIndex)" captainhooks-text="action.hook"></a>
-								<div captainhooks-show="action.show">
+								<div captainhooks-show="action.expand">
 									<ul>
 										<template captainhooks-for="usage in action.usages">
 											<li>
-												<span captainhooks-text="usage.file_path"></span>:<span captainhooks-text="usage.line_number"></span> <span captainhooks-text="usage.line"></span>
+												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span>
 											</li>
 										</template>
 									</ul>
@@ -89,11 +89,11 @@
 						<template captainhooks-for="(filter, filterIndex) in filters_filtered">
 							<li>
 							<a href="" captainhooks-on:click.prevent="toggleHook('filters', filterIndex)" captainhooks-text="filter.hook"></a>
-								<div captainhooks-show="filter.show">
+								<div captainhooks-show="filter.expand">
 									<ul>
 										<template captainhooks-for="usage in filter.usages">
 											<li>
-												<span captainhooks-text="usage.file_path"></span>:<span captainhooks-text="usage.line_number"></span> <span captainhooks-text="usage.line"></span>
+												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span>
 											</li>
 										</template>
 									</ul>

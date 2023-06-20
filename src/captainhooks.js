@@ -74,7 +74,7 @@ Alpine.data('captainhooks', () => ({
 	},
 
 	toggleHook(type, hookIndex) {
-		this.hooks[type][hookIndex].show = ! this.hooks[type][hookIndex].show;
+		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
 	}
 
 }))

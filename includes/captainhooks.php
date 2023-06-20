@@ -8,6 +8,10 @@
  */
 namespace CAPTAINHOOKS;
 
+use PhpParser\Error;
+use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -113,11 +117,9 @@ final class Captainhooks {
 	 */
 	public function rest_hooks( $request ) {
 		$path = $request->get_param( 'path' );
+		$hooks = $this->get_path_hooks( $path );
 
-		return rest_ensure_response( array(
-			'actions' => $actions,
-			'filters' => $filters,
-		) );
+		return rest_ensure_response( $hooks );
 	}
 
 	public function get_path_hooks( $path ) {
@@ -126,20 +128,20 @@ final class Captainhooks {
 		$filters = array();
 
 		foreach( $files as $file ) {
-			$code = $this->prepare_code( $file['full_path'] );
-			$code_actions = $this->get_actions( $code );
-			$code_actions = array_map( function( $action ) use ( $file ) {
+			$code = file_get_contents( $file['full_path'] );
+			$hooks = $this->get_hooks( $code );
+
+			$actions_new = array_map( function( $action ) use ( $file ) {
 				$action['file'] = $file['relative_path'];
 				return $action;
-			}, $code_actions );
-			$actions = array_merge( $actions, $code_actions );
+			}, $hooks['actions'] );
+			$actions = array_merge( $actions, $actions_new );
 
-			$code_filters = $this->get_filters( $code );
-			$code_filters = array_map( function( $filter ) use ( $file ) {
+			$filters_new = array_map( function( $filter ) use ( $file ) {
 				$filter['file'] = $file['relative_path'];
 				return $filter;
-			}, $code_filters );
-			$filters = array_merge( $filters, $code_filters );
+			}, $hooks['filters'] );
+			$filters = array_merge( $filters, $filters_new );
 		}
 
 		$actions = $this->reduce_and_sort( $actions );
@@ -148,6 +150,20 @@ final class Captainhooks {
 		return [
 			'actions' => $actions,
 			'filters' => $filters,
+		];
+	}
+
+	public function get_hooks( $code ) {
+		$parser = ( new ParserFactory )->create( ParserFactory::PREFER_PHP7 );
+		$stmts = $parser->parse( $code );
+		$visitor = new CaptainhooksVisitor;
+		$traverser = new NodeTraverser;
+		$traverser->addVisitor( $visitor );
+		$traverser->traverse( $stmts );
+
+		return [
+			'actions' => $visitor->actions,
+			'filters' => $visitor->filters
 		];
 	}
 
@@ -185,72 +201,6 @@ final class Captainhooks {
 		}
 
 		return $files;
-	}
-
-	public function prepare_code( $file_path ) {
-		$lines = file( $file_path );
-		$lines2 = [];
-		$comments = false;
-		foreach( $lines as $index => $line ) {
-			$line_number = $index + 1;
-			if ( $comments && strpos( $line, '*/' ) !== false ) {
-				$comments = false;
-				$line = substr( $line, strpos( $line, '*/' ) + 2 );
-			}
-			if( $comments ) {
-				$line = '';
-			} else {
-				if ( strpos( $line, '//' ) !== false ) {
-					$line = substr( $line, 0, strpos( $line, '//' ) );
-				}
-				if ( strpos( $line, '/*' ) !== false ) {
-					$comments = true;
-					$line = substr( $line, 0, strpos( $line, '/*' ) );
-				}	
-			}
-			$line = str_replace( [ "do_action", "apply_filters" ], [ "*{$line_number}*do_action", "*{$line_number}*apply_filters" ], $line );
-			$lines2[] = trim( $line );
-		}
-		$code = implode( " ", $lines2 );
-		return $code;
-	}
-
-	public function get_actions( $code ) {
-		return $this->get_fn_hooks( 'do_action', $code );
-	}
-
-	public function get_filters( $code) {
-		return $this->get_fn_hooks( 'apply_filters', $code );
-	}
-
-	public function get_fn_hooks( $fn_name, $code ) {
-		preg_match_all( "/(?<=^|\s|;)\*(\d+)\*{$fn_name}\s*\(\s*([^,]*)\s*(?:,\s*([^;]*))?(?=\)\s*;)/", $code, $matches );
-
-		$hooks = [];
-		foreach( $matches[2] as $index => $hook_param ) {
-			$line_number = intval( $matches[1][$index] );
-			$hook_param = trim( $hook_param );
-			$hook = str_replace( [ '"', "'" ], '', $hook_param );
-			$args = trim( $matches[3][$index] );
-			if( empty( $args ) ) {
-				$args = $hook_param;
-			} else {
-				$args = preg_replace('/,(?!\s)/', ', ', $args );
-				$args = preg_replace('/\((?!\s)/', '( ', $args );
-				$args = preg_replace('/\[(?!\s)/', '[ ', $args );
-				$args = preg_replace('/(?<=\S)\)/', ' )', $args );
-				$args = preg_replace('/(?<=\S)\]/', ' ]', $args );
-				$args = preg_replace('/\s+/', ' ', $args );
-				$args = $hook_param . ', ' . $args;
-			}
-			$hooks[] = [
-				'hook' => $hook,
-				'line' => $line_number,
-				'code' => "{$fn_name}( {$args} )"
-			];
-		}
-		
-		return $hooks;
 	}
 
 	public function reduce_and_sort( $hooks ) {
