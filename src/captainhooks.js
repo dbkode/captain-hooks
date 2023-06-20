@@ -51,6 +51,14 @@ Alpine.data('captainhooks', () => ({
 	},
 
 	async loadHooks(type, folder, path) {
+		this.type = type;
+		this.folder = folder;
+		this.tab = 'loading';
+		this.hooks = {
+			actions: [],
+			filters: []
+		};
+		this.page = 'hooks';
 		// fetch hooks
 		const response = await fetch(`${captainHooksData.rest}/hooks`, {
 			method: "POST",
@@ -63,14 +71,11 @@ Alpine.data('captainhooks', () => ({
 			})
 		});
 		const responseJson = await response.json();
-		this.type = type;
-		this.folder = folder;
-		this.tab = 'actions';
 		this.hooks = {
 			actions: responseJson.actions,
 			filters: responseJson.filters
 		};
-		this.page = 'hooks';
+		this.tab = 'actions';
 	},
 
 	toggleHook(type, hookIndex) {

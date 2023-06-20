@@ -42,6 +42,8 @@
 	<template captainhooks-if="'hooks' === page">
 		<div>
 
+			<button captainhooks-on:click.prevent="page = 'start'">&lt;&lt; Back</button>
+
 			<h2>
 				<span captainhooks-text="type"></span> &gt; <span captainhooks-text="folder"></span>
 			</h2>
@@ -55,6 +57,11 @@
 					Filters (<span captainhooks-text="hooks.filters.length"></span>)
 				</a>
 			</div>
+
+			<!-- Loading Spinner -->
+			<template captainhooks-if="'loading' === tab">
+				<h3>Analysing <span captainhooks-text="type"></span> files...<span class="spinner is-active" style="float: none;"></span></h3>
+			</template>
 
 			<!-- Actions -->
 			<template captainhooks-if="'actions' === tab">
