@@ -48,6 +48,8 @@
 				<span captainhooks-text="type"></span> &gt; <span captainhooks-text="folder"></span>
 			</h2>
 
+			<button captainhooks-on:click.prevent="refreshHooks">Refresh hooks</button>
+
 			<!-- Tabs -->
 			<div class="nav-tab-wrapper">
 				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'actions'" captainhooks-bind:class="{'nav-tab-active': 'actions' === tab}">

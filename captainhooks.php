@@ -26,12 +26,26 @@ register_deactivation_hook( __FILE__, 'captainhooks_deactivate' );
  * @since 1.0.0
  */
 function captainhooks_activate() {
-	// set default captainhooks settings.
-	$options = get_option( 'captainhooks_settings' );
-	if ( false === $options ) {
-		$default = array();
-		update_option( 'captainhooks_settings', $default );
-	}
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'captainhooks_hooks';
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$sql = "CREATE TABLE $table_name (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			hook text NOT NULL,
+			type text NOT NULL,
+			line int(11) NOT NULL,
+			code text NOT NULL,
+			file text NOT NULL,
+			folder text NOT NULL,
+			PRIMARY KEY  (id)
+	) $charset_collate;";
+
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	dbDelta($sql);
+
+	// Store version in options table
+	add_option( 'captainhooks_version', CAPTAINHOOKS_VERSION );
 }
 
 /**

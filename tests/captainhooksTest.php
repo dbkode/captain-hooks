@@ -1,8 +1,5 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use PhpParser\Error;
-use PhpParser\NodeTraverser;
-use PhpParser\ParserFactory;
 
 class CaptainhooksTest extends TestCase {
 
@@ -106,23 +103,6 @@ class CaptainhooksTest extends TestCase {
 		$result = $ch->get_folder_phps( $path );
 
 		$this->assertEquals( $expected, $result );
-	}
-
-	private function parse( $path ) {
-		require_once __DIR__ . '/captainhooksVisitor.php';
-
-		$code = file_get_contents( $path );
-		$parser = ( new ParserFactory )->create( ParserFactory::PREFER_PHP7 );
-		$stmts = $parser->parse( $code );
-		$visitor = new CaptainhooksVisitor;
-		$traverser = new NodeTraverser;
-		$traverser->addVisitor( $visitor );
-		$traverser->traverse( $stmts );
-
-		return [
-			'actions' => $visitor->actions,
-			'filters' => $visitor->filters
-		];
 	}
 
 }

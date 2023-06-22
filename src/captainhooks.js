@@ -18,6 +18,7 @@ Alpine.data('captainhooks', () => ({
 	type: '',
 
 	folder: '',
+	folderPath: '',
 
 	hooks: {
 		actions: [],
@@ -53,6 +54,7 @@ Alpine.data('captainhooks', () => ({
 	async loadHooks(type, folder, path) {
 		this.type = type;
 		this.folder = folder;
+		this.folderPath = path;
 		this.tab = 'loading';
 		this.hooks = {
 			actions: [],
@@ -68,6 +70,27 @@ Alpine.data('captainhooks', () => ({
 			},
 			body: JSON.stringify({
 				path
+			})
+		});
+		const responseJson = await response.json();
+		this.hooks = {
+			actions: responseJson.actions,
+			filters: responseJson.filters
+		};
+		this.tab = 'actions';
+	},
+
+	async refreshHooks() {
+		this.tab = 'loading';
+		// fetch hooks
+		const response = await fetch(`${captainHooksData.rest}/refresh`, {
+			method: "POST",
+			headers: {
+				"X-WP-Nonce": captainHooksData.nonce,
+				"Content-Type": "application/json;charset=utf-8"
+			},
+			body: JSON.stringify({
+				path: this.folderPath
 			})
 		});
 		const responseJson = await response.json();

@@ -105,6 +105,18 @@ final class Captainhooks {
 				},
 			)
 		);
+		// Refresh hooks.
+		register_rest_route(
+			'captainhooks/v1',
+			'/refresh',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'rest_refresh' ),
+				'permission_callback' => function () {
+					return current_user_can('manage_options');
+				},
+			)
+		);
 	}
 
 	/**
@@ -122,7 +134,91 @@ final class Captainhooks {
 		return rest_ensure_response( $hooks );
 	}
 
-	public function get_path_hooks( $path ) {
+	public function rest_refresh( $request ) {
+		$path = $request->get_param( 'path' );
+		$hooks = $this->get_path_hooks( $path, true );
+
+		return rest_ensure_response( $hooks );
+	}
+
+	public function get_path_hooks( $path, $force_refresh = false, $to_cache = true ) {
+		$hooks = $force_refresh ? [] : $this->get_cached_hooks( $path );
+		if( $force_refresh || ( empty( $hooks['actions'] ) && empty( $hooks['filters'] ) ) ) {
+			$hooks = $this->generate_path_hooks( $path );
+			if( $to_cache ) {
+				$this->cache_hooks( $path, $hooks );
+			}
+		}
+
+		$actions = $this->reduce_and_sort( $hooks['actions'] );
+		$filters = $this->reduce_and_sort( $hooks['filters'] );
+
+		return [
+			'actions' => $actions,
+			'filters' => $filters,
+		];
+	}
+
+	public function get_cached_hooks( $path ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'captainhooks_hooks';
+
+		$actions = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = '$path' AND type = 'action'" ),
+			ARRAY_A
+		);
+		$filters = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = '$path' AND type = 'filter'" ),
+			ARRAY_A
+		);
+
+		return [
+			'actions' => $actions,
+			'filters' => $filters,
+		];
+	}
+
+	public function cache_hooks( $path, $hooks ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'captainhooks_hooks';
+
+		$wpdb->query( 
+			$wpdb->prepare( "DELETE FROM $table_name WHERE folder = '$path'" )
+		);
+
+		$actions = $hooks['actions'];
+		$filters = $hooks['filters'];
+
+		$actions = array_map( function( $action ) use ( $path ) {
+			return [
+				'hook' => $action['hook'],
+				'type' => 'action',
+				'line' => $action['line'],
+				'code' => $action['code'],
+				'file' => $action['file'],
+				'folder' => $path
+			];
+		}, $actions );
+
+		$filters = array_map( function( $filter ) use ( $path ) {
+			return [
+				'hook' => $filter['hook'],
+				'type' => 'filter',
+				'line' => $filter['line'],
+				'code' => $filter['code'],
+				'file' => $filter['file'],
+				'folder' => $path
+			];
+		}, $filters );
+
+		$hooks = array_merge( $actions, $filters );
+
+		foreach( $hooks as $hook ) {
+			$wpdb->insert( $table_name, $hook );
+		}
+	}
+
+	public function generate_path_hooks( $path ) {
 		$files = $this->get_folder_phps( $path );
 		$actions = array();
 		$filters = array();
@@ -143,9 +239,6 @@ final class Captainhooks {
 			}, $hooks['filters'] );
 			$filters = array_merge( $filters, $filters_new );
 		}
-
-		$actions = $this->reduce_and_sort( $actions );
-		$filters = $this->reduce_and_sort( $filters );
 
 		return [
 			'actions' => $actions,
