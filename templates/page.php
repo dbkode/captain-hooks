@@ -78,7 +78,7 @@
 									<ul>
 										<template captainhooks-for="usage in action.usages">
 											<li>
-												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span>
+												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span> <button captainhooks-on:click.prevent="preview(usage.file, usage.line)">Preview</button>
 											</li>
 										</template>
 									</ul>
@@ -115,5 +115,13 @@
 
 		</div>
 	</template>
+
+	<!-- PREVIEW PAGE -->
+	<div id="captainhooks-preview" captainhooks-show="showPreview">
+	<button class="captainhooks-close" captainhooks-on:click.prevent="showPreview = false">Close</button>
+		<div class="captainhooks-modal">
+			<pre><code id="captainhooks-preview-code" class="language-php"></code></pre>
+		</div>
+	</div>
 
 </div>

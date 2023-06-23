@@ -9,6 +9,11 @@
  */
 import Alpine from 'alpinejs' 
 import './captainhooks.scss'
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
+
+window.hljs = hljs;
+require('highlightjs-line-numbers.js');
 
 Alpine.prefix('captainhooks-');
 
@@ -29,6 +34,8 @@ Alpine.data('captainhooks', () => ({
 
 	actions_term: '',
 	filters_term: '',
+
+	showPreview: false,
 
 	get actions_filtered() {
 		return this.actions_term ? this.hooks.actions.filter(action => action.hook.indexOf(this.actions_term) !== -1) : this.hooks.actions;
@@ -103,6 +110,42 @@ Alpine.data('captainhooks', () => ({
 
 	toggleHook(type, hookIndex) {
 		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
+	},
+
+	async preview(file, line) {
+		this.line = line;
+		const response = await fetch(`${captainHooksData.rest}/preview`, {
+			method: "POST",
+			headers: {
+				"X-WP-Nonce": captainHooksData.nonce,
+				"Content-Type": "application/json;charset=utf-8"
+			},
+			body: JSON.stringify({
+				path: this.folderPath,
+				file
+			})
+		});
+		const responseJson = await response.json();
+
+		this.showPreview = true;
+		document.getElementById('captainhooks-preview-code').textContent = responseJson.code;
+		this.highlightCode(line);
+	},
+
+	async highlightCode(line) {
+		// highlight code
+		hljs.highlightAll();
+
+		// add line numbers
+		hljs.initLineNumbersOnLoad();
+		
+		// highlight and focus line
+		await this.$nextTick();
+		const linesEl = document.querySelectorAll(`.hljs-ln-line[data-line-number="${line}"]`);
+		linesEl.forEach(lineEl => {
+			lineEl.classList.add('captainhooks-highlight');
+			lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		});
 	}
 
 }))

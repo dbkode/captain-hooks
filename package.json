@@ -28,5 +28,9 @@
     "style-loader": "^3.3.2",
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "highlight.js": "^11.8.0",
+    "highlightjs-line-numbers.js": "^2.8.0"
   }
 }

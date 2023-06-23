@@ -42,7 +42,7 @@ final class Captainhooks {
 		load_plugin_textdomain( 'captainhooks', false, CAPTAINHOOKS_PLUGIN_DIR . '/languages' );
 
 		// Enqueue admin scripts.
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		// add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		add_filter( 'script_loader_tag', array( $this, 'defer_parsing_of_js' ), 10 );
 
 		// Register rest functions.
@@ -117,6 +117,18 @@ final class Captainhooks {
 				},
 			)
 		);
+		// Preview file.
+		register_rest_route(
+			'captainhooks/v1',
+			'/preview',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'rest_preview' ),
+				'permission_callback' => function () {
+					return current_user_can('manage_options');
+				},
+			)
+		);
 	}
 
 	/**
@@ -139,6 +151,21 @@ final class Captainhooks {
 		$hooks = $this->get_path_hooks( $path, true );
 
 		return rest_ensure_response( $hooks );
+	}
+
+	public function rest_preview( $request ) {
+		$path = $request->get_param( 'path' );
+		$file = $request->get_param( 'file' );
+
+		$full_path = $path . $file;
+		$code = file_get_contents( $full_path );
+
+		return rest_ensure_response(
+			[
+				'code' => $code,
+				'file' => $file
+			]
+		);
 	}
 
 	public function get_path_hooks( $path, $force_refresh = false, $to_cache = true ) {
@@ -322,13 +349,14 @@ final class Captainhooks {
 	 * @since 1.0.0
 	 */
 	public function add_settings_page() {
-		add_management_page(
+		$hook_sufix = add_management_page(
 			__( 'Captain Hooks', 'captainhooks' ),
 			__( 'Captain Hooks', 'captainhooks' ),
 			'manage_options',
 			'captainhooks-page',
 			array( $this, 'render_page' )
 		);
+		add_action( 'admin_print_scripts-' . $hook_sufix, array( $this, 'admin_scripts' ) );
 	}
 
 	/**
