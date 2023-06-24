@@ -105,4 +105,12 @@ class CaptainhooksTest extends TestCase {
 		$this->assertEquals( $expected, $result );
 	}
 
+	public function testGetParams() {
+
+	}
+
+	public function testGuessParamName() {
+		
+	}
+
 }

@@ -220,9 +220,11 @@ final class Captainhooks {
 			return [
 				'hook' => $action['hook'],
 				'type' => 'action',
-				'line' => $action['line'],
+				'line_start' => $action['line_start'],
+				'line_end' => $action['line_end'],
 				'code' => $action['code'],
 				'file' => $action['file'],
+				'sample' => $action['sample'],
 				'folder' => $path
 			];
 		}, $actions );
@@ -231,9 +233,11 @@ final class Captainhooks {
 			return [
 				'hook' => $filter['hook'],
 				'type' => 'filter',
-				'line' => $filter['line'],
+				'line_start' => $filter['line_start'],
+				'line_end' => $filter['line_end'],
 				'code' => $filter['code'],
 				'file' => $filter['file'],
+				'sample' => $filter['sample'],
 				'folder' => $path
 			];
 		}, $filters );
@@ -256,12 +260,14 @@ final class Captainhooks {
 
 			$actions_new = array_map( function( $action ) use ( $file ) {
 				$action['file'] = $file['relative_path'];
+				$action['sample'] = '';
 				return $action;
 			}, $hooks['actions'] );
 			$actions = array_merge( $actions, $actions_new );
 
 			$filters_new = array_map( function( $filter ) use ( $file ) {
 				$filter['file'] = $file['relative_path'];
+				$filter['sample'] = '';
 				return $filter;
 			}, $hooks['filters'] );
 			$filters = array_merge( $filters, $filters_new );

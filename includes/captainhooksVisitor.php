@@ -16,10 +16,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $node->name->toString() === 'do_action' ) {
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
+            $args = $this->get_pretty_args( $node );
             $this->actions[] = [
                 'hook' => $hook,
-                'line' => $node->getStartLine(),
-                'code' => $code
+                'line_start' => $node->getStartLine(),
+                'line_end' => $node->getEndLine(),
+                'code' => $code,
+                'args' => $args
             ];
         }
 
@@ -29,10 +32,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $node->name->toString() === 'apply_filters' ) {
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
+            $args = $this->get_pretty_args( $node );
             $this->filters[] = [
                 'hook' => $hook,
-                'line' => $node->getStartLine(),
+                'line_start' => $node->getStartLine(),
+                'line_end' => $node->getEndLine(),
                 'code' => $code,
+                'args' => $args
             ];
         }
     }
@@ -60,5 +66,15 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         $code = preg_replace('/\s+/', ' ', $code );
 
         return $code;
+    }
+
+    private function get_pretty_args( $node ) {
+        $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
+        $args = [];
+        foreach ($node->args as $arg) {
+            $args[] = $prettyPrinter->prettyPrintExpr( $arg->value );
+        }
+
+        return $args;
     }
 }

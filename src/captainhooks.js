@@ -112,8 +112,7 @@ Alpine.data('captainhooks', () => ({
 		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
 	},
 
-	async preview(file, line) {
-		this.line = line;
+	async preview(file, line_start, line_end) {
 		const response = await fetch(`${captainHooksData.rest}/preview`, {
 			method: "POST",
 			headers: {
@@ -129,23 +128,29 @@ Alpine.data('captainhooks', () => ({
 
 		this.showPreview = true;
 		document.getElementById('captainhooks-preview-code').textContent = responseJson.code;
-		this.highlightCode(line);
+		this.highlightCode(line_start, line_end);
 	},
 
-	async highlightCode(line) {
+	async highlightCode(line_start, line_end) {
 		// highlight code
 		hljs.highlightAll();
 
 		// add line numbers
 		hljs.initLineNumbersOnLoad();
 		
-		// highlight and focus line
 		await this.$nextTick();
-		const linesEl = document.querySelectorAll(`.hljs-ln-line[data-line-number="${line}"]`);
-		linesEl.forEach(lineEl => {
-			lineEl.classList.add('captainhooks-highlight');
-			lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		});
+
+		// highlight lines
+		for(let l = line_start; l <= line_end; l++) {
+			const linesEl = document.querySelectorAll(`.hljs-ln-line[data-line-number="${l}"]`);
+			linesEl.forEach(lineEl => {
+				lineEl.classList.add('captainhooks-highlight');
+			});
+		}
+
+		// scroll to line
+		const lineEl = document.querySelector(`.hljs-ln-line[data-line-number="${line_start}"]`);
+		lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	}
 
 }))

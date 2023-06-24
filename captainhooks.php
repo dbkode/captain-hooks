@@ -34,9 +34,11 @@ function captainhooks_activate() {
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			hook text NOT NULL,
 			type text NOT NULL,
-			line int(11) NOT NULL,
+			line_start int(11) NOT NULL,
+			line_end int(11) NOT NULL,
 			code text NOT NULL,
 			file text NOT NULL,
+			sample text NULL,
 			folder text NOT NULL,
 			PRIMARY KEY  (id)
 	) $charset_collate;";

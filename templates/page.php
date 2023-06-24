@@ -78,7 +78,7 @@
 									<ul>
 										<template captainhooks-for="usage in action.usages">
 											<li>
-												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span> <button captainhooks-on:click.prevent="preview(usage.file, usage.line)">Preview</button>
+												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line_start"></span> <span captainhooks-text="usage.code"></span> <button captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)">Preview</button>
 											</li>
 										</template>
 									</ul>
@@ -102,7 +102,7 @@
 									<ul>
 										<template captainhooks-for="usage in filter.usages">
 											<li>
-												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line"></span> <span captainhooks-text="usage.code"></span>
+												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line_start"></span> <span captainhooks-text="usage.code"></span> <button captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)">Preview</button>
 											</li>
 										</template>
 									</ul>
