@@ -194,10 +194,21 @@ final class Captainhooks {
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = '$path' AND type = 'action'" ),
 			ARRAY_A
 		);
+		// map actions and convert params to array
+		$actions = array_map( function( $action ) {
+			$action['params'] = json_decode( $action['params'] );
+			return $action;
+		}, $actions );
+
 		$filters = $wpdb->get_results( 
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = '$path' AND type = 'filter'" ),
 			ARRAY_A
 		);
+		// map filters and convert params to array
+		$filters = array_map( function( $filter ) {
+			$filter['params'] = json_decode( $filter['params'] );
+			return $filter;
+		}, $filters );
 
 		return [
 			'actions' => $actions,
@@ -224,7 +235,7 @@ final class Captainhooks {
 				'line_end' => $action['line_end'],
 				'code' => $action['code'],
 				'file' => $action['file'],
-				'sample' => $action['sample'],
+				'params' => json_encode( $action['params'] ),
 				'folder' => $path
 			];
 		}, $actions );
@@ -237,7 +248,7 @@ final class Captainhooks {
 				'line_end' => $filter['line_end'],
 				'code' => $filter['code'],
 				'file' => $filter['file'],
-				'sample' => $filter['sample'],
+				'params' => json_encode( $filter['params'] ),
 				'folder' => $path
 			];
 		}, $filters );
@@ -260,14 +271,12 @@ final class Captainhooks {
 
 			$actions_new = array_map( function( $action ) use ( $file ) {
 				$action['file'] = $file['relative_path'];
-				$action['sample'] = '';
 				return $action;
 			}, $hooks['actions'] );
 			$actions = array_merge( $actions, $actions_new );
 
 			$filters_new = array_map( function( $filter ) use ( $file ) {
 				$filter['file'] = $file['relative_path'];
-				$filter['sample'] = '';
 				return $filter;
 			}, $hooks['filters'] );
 			$filters = array_merge( $filters, $filters_new );
@@ -330,6 +339,30 @@ final class Captainhooks {
 	}
 
 	public function reduce_and_sort( $hooks ) {
+		// add sample
+		$hooks = array_map( function( $hook ) {
+			$params = $hook['params'];
+			$args = array_slice( $params, 1 );
+			$args_str = implode( ', ', $args );
+			if( ! empty( $args_str ) ) {
+				$args_str = ' ' . $args_str . ' ';
+			}
+			$num_args = count( $args );
+			$cmd = 'action' === $hook['type'] ? 'add_action' : 'add_filter';
+
+			$sample = "<?php\n";
+			$sample .= "{$cmd}( {$params[0]}, 'my_function', 10, {$num_args} );\n\n";
+			$sample .= "function my_function({$args_str}) {\n";
+			$sample .= "\t// your code\n";
+			if( 'filter' === $hook['type'] ) {
+				$sample .= "\treturn \$something;\n";
+			}
+			$sample .= "}\n"; 
+
+			$hook['sample'] = $sample;
+			return $hook;
+		}, $hooks );
+
 		// sort by hook
 		usort( $hooks, function( $a, $b ) {
 			return strcmp( $a['hook'], $b['hook'] );

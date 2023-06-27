@@ -38,7 +38,7 @@ function captainhooks_activate() {
 			line_end int(11) NOT NULL,
 			code text NOT NULL,
 			file text NOT NULL,
-			sample text NULL,
+			params text NULL,
 			folder text NOT NULL,
 			PRIMARY KEY  (id)
 	) $charset_collate;";

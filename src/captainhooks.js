@@ -84,6 +84,7 @@ Alpine.data('captainhooks', () => ({
 			actions: responseJson.actions,
 			filters: responseJson.filters
 		};
+		console.log(this.hooks);
 		this.tab = 'actions';
 	},
 
@@ -131,6 +132,12 @@ Alpine.data('captainhooks', () => ({
 		this.highlightCode(line_start, line_end);
 	},
 
+	viewSample(sample) {
+		this.showPreview = true;
+		document.getElementById('captainhooks-preview-code').textContent = sample;
+		this.highlightCode(false, false);
+	},
+
 	async highlightCode(line_start, line_end) {
 		// highlight code
 		hljs.highlightAll();
@@ -138,6 +145,9 @@ Alpine.data('captainhooks', () => ({
 		// add line numbers
 		hljs.initLineNumbersOnLoad();
 		
+		if(! line_start ) {
+			return;
+		}
 		await this.$nextTick();
 
 		// highlight lines

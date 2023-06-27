@@ -16,13 +16,14 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $node->name->toString() === 'do_action' ) {
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
-            $args = $this->get_pretty_args( $node );
+            $params = $this->get_pretty_args( $node );
             $this->actions[] = [
                 'hook' => $hook,
+                'type' => 'action',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
                 'code' => $code,
-                'args' => $args
+                'params' => $params
             ];
         }
 
@@ -32,13 +33,14 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $node->name->toString() === 'apply_filters' ) {
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
-            $args = $this->get_pretty_args( $node );
+            $params = $this->get_pretty_args( $node );
             $this->filters[] = [
                 'hook' => $hook,
+                'type' => 'filter',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
                 'code' => $code,
-                'args' => $args
+                'params' => $params
             ];
         }
     }
@@ -71,10 +73,25 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
     private function get_pretty_args( $node ) {
         $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
         $args = [];
-        foreach ($node->args as $arg) {
-            $args[] = $prettyPrinter->prettyPrintExpr( $arg->value );
+        $count_other = 0;
+        foreach ($node->args as $index => $arg) {
+            if( 0 === $index ) {
+                $args[] = $prettyPrinter->prettyPrintExpr($arg->value);
+            } elseif ($arg->value instanceof Node\Expr\Variable) {
+                $args[] = '$' . $arg->value->name;
+            } elseif ($arg->value instanceof Node\Scalar) {
+                $args[] = '$' . $arg->value->value;
+            } elseif ($arg->value instanceof Node\Expr\Array_) {
+                $args[] = '$items';
+            } elseif ($arg->value instanceof Node\Expr\ArrayDimFetch) {
+                $args[] = '$' . $arg->value->dim->value;
+            } else {
+                $count_other += 1;
+                $args[] = '$var' . $count_other;
+            }
         }
 
         return $args;
     }
+
 }
