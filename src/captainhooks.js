@@ -38,25 +38,17 @@ Alpine.data('captainhooks', () => ({
 	showPreview: false,
 
 	get actions_filtered() {
-		if(this.actions_term) {
-			return this.hooks.actions.map(action => {
-				action.visible = action.hook.indexOf(this.actions_term) !== -1;
-				return action;
-			});
-		} else {
-			return this.hooks.actions;
-		}
+		return this.hooks.actions.map(action => {
+			action.visible = !this.actions_term || action.hook.indexOf(this.actions_term) !== -1;
+			return action;
+		});
 	},
 
 	get filters_filtered() {
-		if(this.filters_term) {
-			return this.hooks.filters.map(filter => {
-				filter.visible = filter.hook.indexOf(this.filters_term) !== -1;
-				return filter;
-			});
-		} else {
-			return this.hooks.filters;
-		}
+		return this.hooks.filters.map(filter => {
+			filter.visible = !this.filters_term || filter.hook.indexOf(this.filters_term) !== -1;
+			return filter;
+		});
 	},
 
 	/**
