@@ -378,7 +378,7 @@ final class Captainhooks {
 
 		// convert actions to array
 		$hooks = array_map( function( $key, $value ) {
-			return [ 'hook' => $key, 'usages' => $value, 'expand' => false ];
+			return [ 'hook' => $key, 'usages' => $value, 'visible' => true, 'expand' => false ];
 		}, array_keys( $hooks ), $hooks );
 
 		return $hooks;

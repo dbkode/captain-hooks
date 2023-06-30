@@ -72,7 +72,7 @@
 					<input type="text" captainhooks-model="actions_term" placeholder="Filter actions..." />
 					<ul>
 						<template captainhooks-for="(action, actionIndex) in actions_filtered">
-							<li>
+							<li captainhooks-show="action.visible">
 								<a href="" captainhooks-on:click.prevent="toggleHook('actions', actionIndex)" captainhooks-text="action.hook"></a>
 								<div captainhooks-show="action.expand">
 									<ul>
@@ -99,7 +99,7 @@
 					<input type="text" captainhooks-model="filters_term" placeholder="Filter filters..." />
 					<ul>
 						<template captainhooks-for="(filter, filterIndex) in filters_filtered">
-							<li>
+							<li captainhooks-show="filter.visible">
 							<a href="" captainhooks-on:click.prevent="toggleHook('filters', filterIndex)" captainhooks-text="filter.hook"></a>
 								<div captainhooks-show="filter.expand">
 									<ul>

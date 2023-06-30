@@ -38,11 +38,25 @@ Alpine.data('captainhooks', () => ({
 	showPreview: false,
 
 	get actions_filtered() {
-		return this.actions_term ? this.hooks.actions.filter(action => action.hook.indexOf(this.actions_term) !== -1) : this.hooks.actions;
+		if(this.actions_term) {
+			return this.hooks.actions.map(action => {
+				action.visible = action.hook.indexOf(this.actions_term) !== -1;
+				return action;
+			});
+		} else {
+			return this.hooks.actions;
+		}
 	},
 
 	get filters_filtered() {
-		return this.filters_term ? this.hooks.filters.filter(filter => filter.hook.indexOf(this.filters_term) !== -1) : this.hooks.filters;
+		if(this.filters_term) {
+			return this.hooks.filters.map(filter => {
+				filter.visible = filter.hook.indexOf(this.filters_term) !== -1;
+				return filter;
+			});
+		} else {
+			return this.hooks.filters;
+		}
 	},
 
 	/**
@@ -84,7 +98,6 @@ Alpine.data('captainhooks', () => ({
 			actions: responseJson.actions,
 			filters: responseJson.filters
 		};
-		console.log(this.hooks);
 		this.tab = 'actions';
 	},
 
@@ -110,6 +123,7 @@ Alpine.data('captainhooks', () => ({
 	},
 
 	toggleHook(type, hookIndex) {
+		console.log(hookIndex);
 		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
 	},
 
