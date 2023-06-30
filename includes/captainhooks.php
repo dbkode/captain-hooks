@@ -234,6 +234,7 @@ final class Captainhooks {
 				'line_start' => $action['line_start'],
 				'line_end' => $action['line_end'],
 				'code' => $action['code'],
+				'doc_block' => $action['doc_block'],
 				'file' => $action['file'],
 				'params' => json_encode( $action['params'] ),
 				'folder' => $path
@@ -247,6 +248,7 @@ final class Captainhooks {
 				'line_start' => $filter['line_start'],
 				'line_end' => $filter['line_end'],
 				'code' => $filter['code'],
+				'doc_block' => $filter['doc_block'],
 				'file' => $filter['file'],
 				'params' => json_encode( $filter['params'] ),
 				'folder' => $path
@@ -368,7 +370,7 @@ final class Captainhooks {
 			return strcmp( $a['hook'], $b['hook'] );
 		});
 
-		// group aby hook with same name
+		// group by hook with same name
 		$hooks = array_reduce( $hooks, function( $carry, $item ) {
 			$carry[ $item['hook'] ][] = $item;
 			return $carry;

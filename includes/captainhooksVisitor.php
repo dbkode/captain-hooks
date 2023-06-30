@@ -17,12 +17,14 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
             $params = $this->get_pretty_args( $node );
+            $doc_block = $this->get_doc_block( $node );
             $this->actions[] = [
                 'hook' => $hook,
                 'type' => 'action',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
                 'code' => $code,
+                'doc_block' => $doc_block,
                 'params' => $params
             ];
         }
@@ -34,12 +36,14 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
             $hook = $this->get_hook( $node );
             $code = $this->get_pretty_code( $node );
             $params = $this->get_pretty_args( $node );
+            $doc_block = $this->get_doc_block( $node );
             $this->filters[] = [
                 'hook' => $hook,
                 'type' => 'filter',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
                 'code' => $code,
+                'doc_block' => $doc_block,
                 'params' => $params
             ];
         }
@@ -79,12 +83,19 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
                 $args[] = $prettyPrinter->prettyPrintExpr($arg->value);
             } elseif ($arg->value instanceof Node\Expr\Variable) {
                 $args[] = '$' . $arg->value->name;
-            } elseif ($arg->value instanceof Node\Scalar) {
+            } elseif ($arg->value instanceof Node\Scalar && isset( $arg->value->value ) && strpos( $arg->value->value, ' ') === false) {
                 $args[] = '$' . $arg->value->value;
             } elseif ($arg->value instanceof Node\Expr\Array_) {
                 $args[] = '$items';
             } elseif ($arg->value instanceof Node\Expr\ArrayDimFetch) {
-                $args[] = '$' . $arg->value->dim->value;
+                if ($arg->value->dim instanceof Node\Expr\Variable) {
+                    $args[] = '$' . $arg->value->dim->name;
+                } elseif ($arg->value->dim instanceof Node\Scalar\String_) {
+                    $args[] = '$' . $arg->value->dim->value;
+                } else {
+                    $count_other += 1;
+                    $args[] = '$var' . $count_other;
+                }
             } else {
                 $count_other += 1;
                 $args[] = '$var' . $count_other;
@@ -92,6 +103,16 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         }
 
         return $args;
+    }
+
+    private function get_doc_block( $node ) {
+        $doc_block = '';
+        $doc_comment = $node->getDocComment();
+        if ($doc_comment !== null) {
+            $doc_block = $doc_comment->getText();
+        }
+
+        return $doc_block;
     }
 
 }

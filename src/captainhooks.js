@@ -138,6 +138,12 @@ Alpine.data('captainhooks', () => ({
 		this.highlightCode(false, false);
 	},
 
+	viewDocBlock(docBlock) {
+		this.showPreview = true;
+		document.getElementById('captainhooks-preview-code').textContent = docBlock;
+		this.highlightCode(false, false);
+	},
+
 	async highlightCode(line_start, line_end) {
 		// highlight code
 		hljs.highlightAll();

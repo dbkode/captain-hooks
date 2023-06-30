@@ -81,6 +81,7 @@
 												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line_start"></span> <span captainhooks-text="usage.code"></span>
 												<button captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)">Preview</button>
 												<button captainhooks-on:click.prevent="viewSample(usage.sample)">Sample</button>
+												<button captainhooks-on:click.prevent="viewDocBlock(usage.doc_block)">DocBlock</button>
 											</li>
 										</template>
 									</ul>
@@ -107,6 +108,7 @@
 												<span captainhooks-text="usage.file"></span>:<span captainhooks-text="usage.line_start"></span> <span captainhooks-text="usage.code"></span>
 												<button captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)">Preview</button>
 												<button captainhooks-on:click.prevent="viewSample(usage.sample)">Sample</button>
+												<button captainhooks-on:click.prevent="viewDocBlock(usage.doc_block)">DocBlock</button>
 											</li>
 										</template>
 									</ul>

@@ -37,6 +37,7 @@ function captainhooks_activate() {
 			line_start int(11) NOT NULL,
 			line_end int(11) NOT NULL,
 			code text NOT NULL,
+			doc_block text NULL,
 			file text NOT NULL,
 			params text NULL,
 			folder text NOT NULL,
