@@ -47,6 +47,28 @@ function captainhooks_activate() {
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($sql);
 
+	$table_name = $wpdb->prefix . 'captainhooks_livemode';
+	$sql = "CREATE TABLE $table_name (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		hook text NOT NULL,
+		type text NOT NULL,
+		num_args int(11) NOT NULL,
+		expiry datetime NOT NULL,
+		PRIMARY KEY  (id)
+	) $charset_collate;";
+	dbDelta($sql);
+
+	$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
+	$sql = "CREATE TABLE $table_name (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		hook text NOT NULL,
+		type text NOT NULL,
+		date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		log text NOT NULL,
+		PRIMARY KEY  (id)
+	) $charset_collate;";
+	dbDelta($sql);
+
 	// Store version in options table
 	add_option( 'captainhooks_version', CAPTAINHOOKS_VERSION );
 }

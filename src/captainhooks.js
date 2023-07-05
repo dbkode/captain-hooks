@@ -37,6 +37,8 @@ Alpine.data('captainhooks', () => ({
 
 	showPreview: false,
 
+	liveModeInterval: null,
+
 	get actions_filtered() {
 		return this.hooks.actions.map(action => {
 			action.visible = !this.actions_term || action.hook.indexOf(this.actions_term) !== -1;
@@ -173,6 +175,59 @@ Alpine.data('captainhooks', () => ({
 		// scroll to line
 		const lineEl = document.querySelector(`.hljs-ln-line[data-line-number="${line_start}"]`);
 		lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	},
+
+	async activateLiveMode(hook) {
+		await fetch(`${captainHooksData.rest}/livemode`, {
+			method: "POST",
+			headers: {
+				"X-WP-Nonce": captainHooksData.nonce,
+				"Content-Type": "application/json;charset=utf-8"
+			},
+			body: JSON.stringify({
+				hook: hook.hook,
+				type: hook.type,
+				num_args: hook.num_args
+			})
+		});
+
+		this.showPreview = true;
+		document.getElementById('captainhooks-preview-code').textContent = "";
+
+		clearInterval(this.liveModeInterval);
+		let latestLog = 0;
+		this.liveModeInterval = setInterval(async () => {
+			const response = await fetch(`${captainHooksData.rest}/livemode/logs`, {
+				method: "POST",
+				headers: {
+					"X-WP-Nonce": captainHooksData.nonce,
+					"Content-Type": "application/json;charset=utf-8"
+				},
+				body: JSON.stringify({
+					hook: hook.hook,
+					type: hook.type,
+					latest: latestLog
+				})
+			});
+			const responseJson = await response.json();
+			if(responseJson.length) {
+				latestLog = responseJson[0].date;
+
+				let text = '';
+				responseJson.forEach(log => {
+					text += `> ${log.date}\n`;
+					text += JSON.stringify(log.log, null, 2);
+					text += "\n\n";
+				});
+				document.getElementById('captainhooks-preview-code').textContent = text + document.getElementById('captainhooks-preview-code').textContent;
+			}
+			console.log(responseJson);
+		}, 5000);
+	},
+
+	close() {
+		this.showPreview = false;
+		clearInterval(this.liveModeInterval);
 	}
 
 }))

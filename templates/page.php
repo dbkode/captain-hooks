@@ -74,6 +74,7 @@
 						<template captainhooks-for="(action, actionIndex) in actions_filtered">
 							<li captainhooks-show="action.visible">
 								<a href="" captainhooks-on:click.prevent="toggleHook('actions', actionIndex)" captainhooks-text="action.hook"></a>
+								<button captainhooks-on:click.prevent="activateLiveMode(action)">Live Mode</button>
 								<div captainhooks-show="action.expand">
 									<ul>
 										<template captainhooks-for="usage in action.usages">
@@ -101,6 +102,7 @@
 						<template captainhooks-for="(filter, filterIndex) in filters_filtered">
 							<li captainhooks-show="filter.visible">
 							<a href="" captainhooks-on:click.prevent="toggleHook('filters', filterIndex)" captainhooks-text="filter.hook"></a>
+							<button captainhooks-on:click.prevent="activateLiveMode(filter)">Live Mode</button>
 								<div captainhooks-show="filter.expand">
 									<ul>
 										<template captainhooks-for="usage in filter.usages">
@@ -124,7 +126,7 @@
 
 	<!-- PREVIEW PAGE -->
 	<div id="captainhooks-preview" captainhooks-show="showPreview">
-	<button class="captainhooks-close" captainhooks-on:click.prevent="showPreview = false">Close</button>
+	<button class="captainhooks-close" captainhooks-on:click.prevent="close">Close</button>
 		<div class="captainhooks-modal">
 			<pre><code id="captainhooks-preview-code" class="language-php"></code></pre>
 		</div>

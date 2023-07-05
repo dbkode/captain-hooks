@@ -55,6 +55,9 @@ final class Captainhooks {
 		// Add a settings link to the plugins page.
 		$plugin_dir_name = basename( CAPTAINHOOKS_PLUGIN_DIR );
 		add_filter( 'plugin_action_links_' . $plugin_dir_name . '/captainhooks.php', array( $this, 'add_settings_link' ) );
+
+		// Load live mode hooks
+		$this->load_live_mode_hooks();
 	}
 
 	/**
@@ -129,6 +132,30 @@ final class Captainhooks {
 				},
 			)
 		);
+		// Live mode.
+		register_rest_route(
+			'captainhooks/v1',
+			'/livemode',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'rest_livemode' ),
+				'permission_callback' => function () {
+					return current_user_can('manage_options');
+				},
+			)
+		);
+		// Live mode logs.
+		register_rest_route(
+			'captainhooks/v1',
+			'/livemode/logs',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'rest_livemode_logs' ),
+				'permission_callback' => function () {
+					return current_user_can('manage_options');
+				},
+			)
+		);
 	}
 
 	/**
@@ -166,6 +193,64 @@ final class Captainhooks {
 				'file' => $file
 			]
 		);
+	}
+
+	public function rest_livemode( $request ) {
+		global $wpdb;
+		$hook = $request->get_param( 'hook' );
+		$type = $request->get_param( 'type' );
+		$num_args = $request->get_param( 'num_args' );
+
+		$current_time = current_time('mysql');
+		$date = new \DateTime($current_time);
+		$date->modify('+10 minutes');
+		$future_time = $date->format('Y-m-d H:i:s');
+
+		// check if hook already exists
+		$table_name = $wpdb->prefix . 'captainhooks_livemode';
+		$hook_exists = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s", $hook, $type ),
+			ARRAY_A
+		);
+		if( empty( $hook_exists ) ) {
+			$record = [
+				'hook' => $hook,
+				'type' => $type,
+				'num_args' => $num_args,
+				'expiry' => $future_time
+			];
+			$wpdb->insert( $table_name, $record );
+		} else {
+			$wpdb->update( 
+				$table_name, 
+				[ 'expiry' => $future_time ],
+				[ 'hook' => $hook, 'type' => $type ]
+			);
+		}
+
+		return rest_ensure_response(true);
+	}
+
+	public function rest_livemode_logs( $request ) {
+		global $wpdb;
+		$hook = $request->get_param( 'hook' );
+		$type = $request->get_param( 'type' );
+		$latest = $request->get_param( 'latest' );
+
+		$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
+		if( $latest ) {
+			$logs = $wpdb->get_results( 
+				$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s AND date > %s ORDER BY date DESC LIMIT 1", $hook, $type, $latest ),
+				ARRAY_A
+			);
+		} else {
+			$logs = $wpdb->get_results( 
+				$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s ORDER BY date DESC LIMIT 20", $hook, $type ),
+				ARRAY_A
+			);
+		}
+
+		return rest_ensure_response( $logs );
 	}
 
 	public function get_path_hooks( $path, $force_refresh = false, $to_cache = true ) {
@@ -362,6 +447,7 @@ final class Captainhooks {
 			$sample .= "}\n"; 
 
 			$hook['sample'] = $sample;
+			$hook['num_args'] = $num_args;
 			return $hook;
 		}, $hooks );
 
@@ -378,7 +464,7 @@ final class Captainhooks {
 
 		// convert actions to array
 		$hooks = array_map( function( $key, $value ) {
-			return [ 'hook' => $key, 'usages' => $value, 'visible' => true, 'expand' => false ];
+			return [ 'hook' => $key, 'type' => $value[0]['type'], 'num_args' => $value[0]['num_args'], 'usages' => $value, 'visible' => true, 'expand' => false ];
 		}, array_keys( $hooks ), $hooks );
 
 		return $hooks;
@@ -436,5 +522,44 @@ final class Captainhooks {
 		$settings_link = '<a href="options-general.php?page=captainhooks-settings">' . __( 'Settings' ) . '</a>';
 		array_push( $links, $settings_link );
 		return $links;
+	}
+
+	public function load_live_mode_hooks() {
+		global $wpdb;
+		// get all hooks where expiry is in the future
+		$current_time = current_time('mysql');
+		$table_name = $wpdb->prefix . 'captainhooks_livemode';
+		$hooks = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE expiry > %s", $current_time ),
+			ARRAY_A
+		);
+
+		foreach( $hooks as $hook ) {
+			if( 'action' === $hook['type'] ) {
+				add_action( $hook['hook'], array( $this, 'live_mode_action_callback' ), 10, $hook['num_args'] );
+			} else if( 'filter' === $hook['type'] ) {
+				add_filter( $hook['hook'], array( $this, 'live_mode_filter_callback' ), 10, $hook['num_args'] );
+			}
+		}
+	}
+
+	public function live_mode_action_callback() {
+		global $wpdb;
+
+		$hook = current_filter();
+		$args = func_get_args();
+		$log = [];
+
+		foreach( $args as $arg ) {
+			$log[] = $arg;
+		}
+
+		$record = [
+			'hook' => $hook,
+			'type' => 'action',
+			'log' => json_encode( $log )
+		];
+		$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
+		$wpdb->insert( $table_name, $record );
 	}
 }
