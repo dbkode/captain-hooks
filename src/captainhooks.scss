@@ -1,4 +1,4 @@
-#captainhooks-preview {
+#captainhooks-modal {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -8,7 +8,7 @@
 	background-color: rgba(0, 0, 0, 0.5);
 }
 
-#captainhooks-preview .captainhooks-modal {
+#captainhooks-modal .captainhooks-inside {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -23,7 +23,7 @@
 }
 
 // modal close button
-#captainhooks-preview .captainhooks-close {
+#captainhooks-modal .captainhooks-close {
 	position: absolute;
 	top: 10px;
 	right: 10px;

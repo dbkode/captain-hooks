@@ -110,6 +110,7 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         $doc_comment = $node->getDocComment();
         if ($doc_comment !== null) {
             $doc_block = $doc_comment->getText();
+            $doc_block = preg_replace('/\h+/', ' ', $doc_block );
         }
 
         return $doc_block;

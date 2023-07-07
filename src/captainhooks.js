@@ -35,7 +35,14 @@ Alpine.data('captainhooks', () => ({
 	actions_term: '',
 	filters_term: '',
 
-	showPreview: false,
+	showModal: false,
+	modal: {
+		type: '',
+		title: '',
+		tab: 'usages',
+		hook: {},
+		live: ''
+	},
 
 	liveModeInterval: null,
 
@@ -116,8 +123,38 @@ Alpine.data('captainhooks', () => ({
 		this.tab = 'actions';
 	},
 
+	async showTab(tab) {
+		if(tab === this.modal.tab) {
+			return;
+		}
+
+		this.modal.tab = tab;
+
+		await this.$nextTick();
+
+		// highlight code
+		hljs.highlightAll();
+		// add line numbers
+		hljs.initLineNumbersOnLoad();
+
+		if('live' === tab) {
+			this.activateLiveMode(this.modal.hook);
+		}
+	},
+
+	async openModal(type, hookIndex) {
+		this.modal.type = 'actions' === type ? 'Action' : 'Filter';
+		this.modal.title = this.hooks[type][hookIndex].hook;
+		this.modal.tab = 'usages';
+		this.modal.hook = this.hooks[type][hookIndex];
+		this.showModal = true;
+
+		await this.$nextTick();
+
+		hljs.highlightAll();
+	},
+
 	toggleHook(type, hookIndex) {
-		console.log(hookIndex);
 		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
 	},
 
@@ -192,41 +229,48 @@ Alpine.data('captainhooks', () => ({
 		});
 
 		this.showPreview = true;
-		document.getElementById('captainhooks-preview-code').textContent = "";
+		this.modal.live = "";
 
 		clearInterval(this.liveModeInterval);
-		let latestLog = 0;
+		let latestLog = await this.updateLatestLogs(hook, 0);
+		const self = this;
 		this.liveModeInterval = setInterval(async () => {
-			const response = await fetch(`${captainHooksData.rest}/livemode/logs`, {
-				method: "POST",
-				headers: {
-					"X-WP-Nonce": captainHooksData.nonce,
-					"Content-Type": "application/json;charset=utf-8"
-				},
-				body: JSON.stringify({
-					hook: hook.hook,
-					type: hook.type,
-					latest: latestLog
-				})
-			});
-			const responseJson = await response.json();
-			if(responseJson.length) {
-				latestLog = responseJson[0].date;
-
-				let text = '';
-				responseJson.forEach(log => {
-					text += `> ${log.date}\n`;
-					text += JSON.stringify(log.log, null, 2);
-					text += "\n\n";
-				});
-				document.getElementById('captainhooks-preview-code').textContent = text + document.getElementById('captainhooks-preview-code').textContent;
-			}
-			console.log(responseJson);
+			latestLog = await self.updateLatestLogs(hook, latestLog);
 		}, 5000);
 	},
 
+	async updateLatestLogs(hook, latestLog) {
+		const response = await fetch(`${captainHooksData.rest}/livemode/logs`, {
+			method: "POST",
+			headers: {
+				"X-WP-Nonce": captainHooksData.nonce,
+				"Content-Type": "application/json;charset=utf-8"
+			},
+			body: JSON.stringify({
+				hook: hook.hook,
+				type: hook.type,
+				latest: latestLog
+			})
+		});
+		const responseJson = await response.json();
+		if(responseJson.length) {
+			let text = '';
+			responseJson.forEach(log => {
+				text += `> ${log.date}<br>`;
+				text += log.log;
+				text += "<br><br>";
+				console.log(JSON.parse(log.log));
+			});
+			this.modal.live = text + this.modal.live;
+			return responseJson[0].date;
+		}
+		return latestLog;
+	},
+
 	close() {
-		this.showPreview = false;
+		this.showModal = false;
+		this.modal.tab = '';
+		this.modal.live = '';
 		clearInterval(this.liveModeInterval);
 	}
 

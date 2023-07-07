@@ -464,7 +464,24 @@ final class Captainhooks {
 
 		// convert actions to array
 		$hooks = array_map( function( $key, $value ) {
-			return [ 'hook' => $key, 'type' => $value[0]['type'], 'num_args' => $value[0]['num_args'], 'usages' => $value, 'visible' => true, 'expand' => false ];
+			// check if has docblock
+			$doc_block = '';
+			foreach( $value as $item ) {
+				if( ! empty( $item['doc_block'] ) ) {
+					$doc_block = $item['doc_block'];
+					break;
+				}
+			}
+			return [ 
+				'hook' => $key,
+				'type' => $value[0]['type'],
+				'num_args' => $value[0]['num_args'],
+				'doc_block' => $doc_block,
+				'sample' => $value[0]['sample'],
+				'usages' => $value,
+				'visible' => true,
+				'expand' => false
+			];
 		}, array_keys( $hooks ), $hooks );
 
 		return $hooks;
@@ -550,8 +567,10 @@ final class Captainhooks {
 		$args = func_get_args();
 		$log = [];
 
+		$count = 0;
 		foreach( $args as $arg ) {
-			$log[] = $arg;
+			$count++;
+			$log["arg{$count}"] = $arg;
 		}
 
 		$record = [
