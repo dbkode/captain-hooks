@@ -175,7 +175,12 @@
 			<!-- Live -->
 			<template captainhooks-if="'live' === modal.tab">
 				<div class="wrap captainhooks-tab">
-					<div class="captainhooks-live" captainhooks-html="modal.live"></div>
+					<p>Turn Live Mode On to log all arguments of this hook when it's triggered.</p>
+					<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
+						<span captainhooks-text="modal.live ? 'Live Mode On' : 'Live Mode Off'"></span>
+					</button>
+					<br><br>
+					<div id="captainhooks-live" class="captainhooks-live" captainhooks-html="modal.live"></div>
 				</div>
 			</template>
 

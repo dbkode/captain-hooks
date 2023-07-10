@@ -11,6 +11,7 @@ import Alpine from 'alpinejs'
 import './captainhooks.scss'
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
+import jv from 'w-jsonview-tree';
 
 window.hljs = hljs;
 require('highlightjs-line-numbers.js');
@@ -41,7 +42,8 @@ Alpine.data('captainhooks', () => ({
 		title: '',
 		tab: 'usages',
 		hook: {},
-		live: ''
+		live: '',
+		liveMode: false
 	},
 
 	liveModeInterval: null,
@@ -128,6 +130,11 @@ Alpine.data('captainhooks', () => ({
 			return;
 		}
 
+		if('live' === tab) {
+			this.modal.liveMode = false;
+			this.modal.live = '';
+		}
+
 		this.modal.tab = tab;
 
 		await this.$nextTick();
@@ -136,10 +143,6 @@ Alpine.data('captainhooks', () => ({
 		hljs.highlightAll();
 		// add line numbers
 		hljs.initLineNumbersOnLoad();
-
-		if('live' === tab) {
-			this.activateLiveMode(this.modal.hook);
-		}
 	},
 
 	async openModal(type, hookIndex) {
@@ -214,6 +217,15 @@ Alpine.data('captainhooks', () => ({
 		lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	},
 
+	toggleLiveMode() {
+		this.modal.liveMode = ! this.modal.liveMode;
+		if(this.modal.liveMode) {
+			this.activateLiveMode(this.modal.hook);
+		} else {
+			clearInterval(this.liveModeInterval);
+		}
+	},
+
 	async activateLiveMode(hook) {
 		await fetch(`${captainHooksData.rest}/livemode`, {
 			method: "POST",
@@ -254,15 +266,16 @@ Alpine.data('captainhooks', () => ({
 		});
 		const responseJson = await response.json();
 		if(responseJson.length) {
-			let text = '';
-			responseJson.forEach(log => {
-				text += `> ${log.date}<br>`;
-				text += log.log;
-				text += "<br><br>";
-				console.log(JSON.parse(log.log));
+			const latestDate = responseJson[0].date;
+			responseJson.reverse().forEach(async log => {
+				const text = `<strong>${log.date}</strong><br><div id="captainhooks-log-${log.id}"></div>`;
+				this.modal.live = text + this.modal.live;
+				await this.$nextTick();
+				const ele = document.getElementById(`captainhooks-log-${log.id}`);
+				jv(JSON.parse(log.log), ele, {expanded:false});
 			});
-			this.modal.live = text + this.modal.live;
-			return responseJson[0].date;
+
+			return latestDate;
 		}
 		return latestLog;
 	},
