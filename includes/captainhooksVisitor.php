@@ -23,8 +23,8 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
                 'type' => 'action',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
-                'code' => $code,
-                'doc_block' => $doc_block,
+                'code' => htmlspecialchars( $code ),
+                'doc_block' => htmlspecialchars( $doc_block ),
                 'params' => $params
             ];
         }
@@ -42,8 +42,8 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
                 'type' => 'filter',
                 'line_start' => $node->getStartLine(),
                 'line_end' => $node->getEndLine(),
-                'code' => $code,
-                'doc_block' => $doc_block,
+                'code' => htmlspecialchars( $code ),
+                'doc_block' => htmlspecialchars( $doc_block ),
                 'params' => $params
             ];
         }

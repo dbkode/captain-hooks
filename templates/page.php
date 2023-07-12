@@ -123,70 +123,83 @@
 	</template>
 
 	<!-- MODAL -->
-	<div id="captainhooks-modal" captainhooks-show="showModal">
-		<button class="captainhooks-close" captainhooks-on:click.prevent="close">Close</button>
-		<div class="captainhooks-inside">
-			<button type="button" class="notice-dismiss" captainhooks-on:click.prevent="close"></button>
-			<h2 class="title"><span captainhooks-text="modal.type"></span>: <span captainhooks-text="modal.title"></span></h2>
-			<!-- Tabs -->
-			<div class="nav-tab-wrapper">
-				<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('usages')" captainhooks-bind:class="{'nav-tab-active': 'usages' === modal.tab}">
-					Usages
-				</a>
-				<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('docblock')" captainhooks-bind:class="{'nav-tab-active': 'docblock' === modal.tab}">
-					DocBlock
-				</a>
-				<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('sample')" captainhooks-bind:class="{'nav-tab-active': 'sample' === modal.tab}">
-					Sample
-				</a>
-				<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('live')" captainhooks-bind:class="{'nav-tab-active': 'live' === modal.tab}">
-					Live Mode
-				</a>
+	<template captainhooks-if="showModal">
+		<div class="captainhooks-modal">
+			<div class="captainhooks-inside">
+				<button type="button" class="notice-dismiss" captainhooks-on:click.prevent="close"></button>
+				<h2 class="title"><span captainhooks-text="modal.type"></span>: <span captainhooks-text="modal.title"></span></h2>
+				<!-- Tabs -->
+				<div class="nav-tab-wrapper">
+					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('usages')" captainhooks-bind:class="{'nav-tab-active': 'usages' === modal.tab}">
+						Usages
+					</a>
+					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('docblock')" captainhooks-bind:class="{'nav-tab-active': 'docblock' === modal.tab}">
+						DocBlock
+					</a>
+					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('sample')" captainhooks-bind:class="{'nav-tab-active': 'sample' === modal.tab}">
+						Sample
+					</a>
+					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('live')" captainhooks-bind:class="{'nav-tab-active': 'live' === modal.tab}">
+						Live Mode
+					</a>
+				</div>
+
+				<!-- Usages -->
+				<template captainhooks-if="'usages' === modal.tab">
+					<div class="wrap captainhooks-tab">
+						<ul>
+							<template captainhooks-for="usage in modal.hook.usages">
+							<li>
+								<span class="dashicons dashicons-arrow-right"></span> <span captainhooks-text="usage.file"></span>: <span captainhooks-text="usage.line_start"></span>
+								<a href="#" style="text-decoration: none;" captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)"><span class="dashicons dashicons-media-code"></span></a>
+								<br>
+								<pre><code class="language-php" captainhooks-html="usage.code"></code></pre>
+							</li>
+							</template>
+						</ul>
+					</div>
+				</template>
+
+				<!-- DocBlock -->
+				<template captainhooks-if="'docblock' === modal.tab">
+					<div class="wrap captainhooks-tab">
+						<pre><code class="language-php" captainhooks-html="modal.hook.doc_block ? modal.hook.doc_block : 'No DocBlock detected...'"></code></pre>
+					</div>
+				</template>
+
+				<!-- Sample -->
+				<template captainhooks-if="'sample' === modal.tab">
+					<div class="wrap captainhooks-tab">
+						<pre><code class="language-php" captainhooks-html="modal.hook.sample"></code></pre>
+					</div>
+				</template>
+
+				<!-- Live -->
+				<template captainhooks-if="'live' === modal.tab">
+					<div class="wrap captainhooks-tab">
+						<p>Turn Live Mode On to log all arguments of this hook when it's triggered.</p>
+						<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
+							<span captainhooks-text="modal.live ? 'Live Mode On' : 'Live Mode Off'"></span>
+						</button>
+						<br><br>
+						<div id="captainhooks-live" class="captainhooks-live" captainhooks-html="modal.live"></div>
+					</div>
+				</template>
+
 			</div>
-
-			<!-- Usages -->
-			<template captainhooks-if="'usages' === modal.tab">
-				<div class="wrap captainhooks-tab">
-					<ul>
-						<template captainhooks-for="usage in modal.hook.usages">
-						<li>
-							<span class="dashicons dashicons-arrow-right"></span> <span captainhooks-text="usage.file"></span>: <span captainhooks-text="usage.line_start"></span><br>
-							<pre><code class="language-php" captainhooks-text="usage.code"></code></pre>
-						</li>
-						</template>
-					</ul>
-				</div>
-			</template>
-
-			<!-- DocBlock -->
-			<template captainhooks-if="'docblock' === modal.tab">
-				<div class="wrap captainhooks-tab">
-					<pre><code class="language-php" captainhooks-text="modal.hook.doc_block ? modal.hook.doc_block : 'No DocBlock detected...'"></code></pre>
-				</div>
-			</template>
-
-			<!-- Sample -->
-			<template captainhooks-if="'sample' === modal.tab">
-				<div class="wrap captainhooks-tab">
-					<pre><code class="language-php" captainhooks-text="modal.hook.sample"></code></pre>
-				</div>
-			</template>
-
-			<!-- Live -->
-			<template captainhooks-if="'live' === modal.tab">
-				<div class="wrap captainhooks-tab">
-					<p>Turn Live Mode On to log all arguments of this hook when it's triggered.</p>
-					<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
-						<span captainhooks-text="modal.live ? 'Live Mode On' : 'Live Mode Off'"></span>
-					</button>
-					<br><br>
-					<div id="captainhooks-live" class="captainhooks-live" captainhooks-html="modal.live"></div>
-				</div>
-			</template>
-
-			<!-- <pre><code id="captainhooks-preview-code" class="language-php"></code></pre> -->
 		</div>
-	</div>
+	</template>
+
+	<!-- PREVIEW MODAL -->
+	<template captainhooks-if="showPreviewModal">
+		<div class="captainhooks-modal">
+			<div class="captainhooks-inside">
+				<button type="button" class="notice-dismiss" captainhooks-on:click.prevent="closePreview"></button>
+				<h2 class="title">Preview: <span captainhooks-text="preview.title"></span></h2>
+				<pre><code id="captainhooks-preview-code" class="language-php" captainhooks-html="preview.code"></code></pre>
+			</div>
+		</div>
+	</template>
 
 </div>
 </div>

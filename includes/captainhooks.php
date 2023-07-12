@@ -185,7 +185,8 @@ final class Captainhooks {
 		$file = $request->get_param( 'file' );
 
 		$full_path = $path . $file;
-		$code = file_get_contents( $full_path );
+		$code_raw = file_get_contents( $full_path );
+		$code = htmlspecialchars( $code_raw );
 
 		return rest_ensure_response(
 			[
@@ -446,14 +447,19 @@ final class Captainhooks {
 			}
 			$sample .= "}\n"; 
 
-			$hook['sample'] = $sample;
+			$hook['sample'] = htmlspecialchars( $sample );
 			$hook['num_args'] = $num_args;
 			return $hook;
 		}, $hooks );
 
 		// sort by hook
 		usort( $hooks, function( $a, $b ) {
-			return strcmp( $a['hook'], $b['hook'] );
+			$cmp = strcmp($a['hook'], $b['hook']);
+			if ($cmp != 0) {
+					return $cmp;
+			} else {
+					return $a['line_start'] - $b['line_start'];
+			}
 		});
 
 		// group by hook with same name

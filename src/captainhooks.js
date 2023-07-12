@@ -45,6 +45,11 @@ Alpine.data('captainhooks', () => ({
 		live: '',
 		liveMode: false
 	},
+	showPreviewModal: false,
+	preview: {
+		title: '',
+		code: ''
+	},
 
 	liveModeInterval: null,
 
@@ -175,8 +180,11 @@ Alpine.data('captainhooks', () => ({
 		});
 		const responseJson = await response.json();
 
-		this.showPreview = true;
-		document.getElementById('captainhooks-preview-code').textContent = responseJson.code;
+		this.showPreviewModal = true;
+		this.showModal = false;
+		await this.$nextTick();
+		document.getElementById('captainhooks-preview-code').innerHTML = responseJson.code;
+		this.preview.title = file;
 		this.highlightCode(line_start, line_end);
 	},
 
@@ -285,6 +293,11 @@ Alpine.data('captainhooks', () => ({
 		this.modal.tab = '';
 		this.modal.live = '';
 		clearInterval(this.liveModeInterval);
+	},
+
+	closePreview() {
+		this.showPreviewModal = false;
+		this.showModal = true;
 	}
 
 }))
