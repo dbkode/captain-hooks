@@ -1,14 +1,33 @@
 <?php
+/**
+ * CaptainhooksVisitor
+ *
+ * @package Captainhooks
+ *
+ * @since 1.0.0
+ */
 namespace CAPTAINHOOKS;
 
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 
+/**
+ * CaptainhooksVisitor class
+ *
+ * @since 1.0.0
+ */
 class CaptainhooksVisitor extends NodeVisitorAbstract
 {
     public $actions = [];
     public $filters = [];
 
+    /**
+     * Run when entering a node
+     *
+     * @param Node $node Node
+     *
+     * @return void
+     */
     public function enterNode( Node $node ) {
         // Check for add_action
         if ( $node instanceof Node\Expr\FuncCall &&
@@ -49,6 +68,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * Get hook name
+     *
+     * @param Node $node Node
+     *
+     * @return string
+     */
     private function get_hook( $node ) {
         $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
         $args = [];
@@ -61,6 +87,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         return $hook;
     }
 
+    /**
+     * Get pretty version of the code
+     *
+     * @param Node $node Node
+     *
+     * @return string
+     */
     private function get_pretty_code( $node ) {
         $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
         $code = $prettyPrinter->prettyPrintExpr( $node );
@@ -74,6 +107,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         return $code;
     }
 
+    /**
+     * Get pretty version of the arguments
+     *
+     * @param Node $node Node
+     *
+     * @return array
+     */
     private function get_pretty_args( $node ) {
         $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
         $args = [];
@@ -105,6 +145,13 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         return $args;
     }
 
+    /**
+     * Get doc block
+     *
+     * @param Node $node Node
+     *
+     * @return string
+     */
     private function get_doc_block( $node ) {
         $doc_block = '';
         $doc_comment = $node->getDocComment();

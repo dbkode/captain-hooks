@@ -19,24 +19,97 @@ require('highlightjs-line-numbers.js');
 Alpine.prefix('captainhooks-');
 
 Alpine.data('captainhooks', () => ({
+	/**
+	 * Current page.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	page: 'start',
 
+	/**
+	 * Current hook type.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	type: '',
 
+	/**
+	 * Current folder.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	folder: '',
+
+	/**
+	 * Current folder path.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	folderPath: '',
 
+	/**
+	 * List of hooks.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type object
+	 */
 	hooks: {
 		actions: [],
 		filters: []
 	},
 
+	/**
+	 * Current tab.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	tab: 'actions',
 
+	/**
+	 * Search term for actions.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	actions_term: '',
+
+	/**
+	 * Search term for filters.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
 	filters_term: '',
 
+	/**
+	 * Is modal visible.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type boolean
+	 */
 	showModal: false,
+
+	/**
+	 * Modal details.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type object
+	 */
 	modal: {
 		type: '',
 		title: '',
@@ -45,14 +118,44 @@ Alpine.data('captainhooks', () => ({
 		live: '',
 		liveMode: false
 	},
+
+	/**
+	 * Is preview modal visible.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type boolean
+	 */
 	showPreviewModal: false,
+
+	/**
+	 * Preview modal details.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type object
+	 */
 	preview: {
 		title: '',
 		code: ''
 	},
 
+	/**
+	 * Live mode update interval.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type object
+	 */
 	liveModeInterval: null,
 
+	/**
+	 * Get filtered actions.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array
+	 */
 	get actions_filtered() {
 		return this.hooks.actions.map(action => {
 			action.visible = !this.actions_term || action.hook.indexOf(this.actions_term) !== -1;
@@ -60,6 +163,13 @@ Alpine.data('captainhooks', () => ({
 		});
 	},
 
+	/**
+	 * Get filtered filters.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array
+	 */
 	get filters_filtered() {
 		return this.hooks.filters.map(filter => {
 			filter.visible = !this.filters_term || filter.hook.indexOf(this.filters_term) !== -1;
@@ -80,6 +190,16 @@ Alpine.data('captainhooks', () => ({
 		const self = this;
 	},
 
+	/**
+	 * Load hooks for a path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string type Hook type.
+	 * @param string folder Folder name.
+	 * @param string path Folder path.
+	 * @return void
+	 */
 	async loadHooks(type, folder, path) {
 		this.type = type;
 		this.folder = folder;
@@ -109,6 +229,13 @@ Alpine.data('captainhooks', () => ({
 		this.tab = 'actions';
 	},
 
+	/**
+	 * Refresh hooks - skip cache.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	async refreshHooks() {
 		this.tab = 'loading';
 		// fetch hooks
@@ -130,6 +257,14 @@ Alpine.data('captainhooks', () => ({
 		this.tab = 'actions';
 	},
 
+	/**
+	 * Show active tab.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string tab Tab name.
+	 * @return void
+	 */
 	async showTab(tab) {
 		if(tab === this.modal.tab) {
 			return;
@@ -150,6 +285,15 @@ Alpine.data('captainhooks', () => ({
 		hljs.initLineNumbersOnLoad();
 	},
 
+	/**
+	 * Open modal for hook.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string type Hook type.
+	 * @param int hookIndex Hook index.
+	 * @return void
+	 */
 	async openModal(type, hookIndex) {
 		this.modal.type = 'actions' === type ? 'Action' : 'Filter';
 		this.modal.title = this.hooks[type][hookIndex].hook;
@@ -162,10 +306,16 @@ Alpine.data('captainhooks', () => ({
 		hljs.highlightAll();
 	},
 
-	toggleHook(type, hookIndex) {
-		this.hooks[type][hookIndex].expand = ! this.hooks[type][hookIndex].expand;
-	},
-
+	/**
+	 * Open preview modal for file.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string file File path.
+	 * @param int line_start Start line.
+	 * @param int line_end End line.
+	 * @return void
+	 */
 	async preview(file, line_start, line_end) {
 		const response = await fetch(`${captainHooksData.rest}/preview`, {
 			method: "POST",
@@ -188,18 +338,43 @@ Alpine.data('captainhooks', () => ({
 		this.highlightCode(line_start, line_end);
 	},
 
+	/**
+	 * View code sample and highlight code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string sample Sample code.
+	 * @return void
+	 */
 	viewSample(sample) {
 		this.showPreview = true;
 		document.getElementById('captainhooks-preview-code').textContent = sample;
 		this.highlightCode(false, false);
 	},
 
+	/**
+	 * View docblock and highlight code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string docBlock Docblock.
+	 * @return void
+	 */
 	viewDocBlock(docBlock) {
 		this.showPreview = true;
 		document.getElementById('captainhooks-preview-code').textContent = docBlock;
 		this.highlightCode(false, false);
 	},
 
+	/**
+	 * Highlight code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int line_start Start line.
+	 * @param int line_end End line.
+	 * @return void
+	 */
 	async highlightCode(line_start, line_end) {
 		// highlight code
 		hljs.highlightAll();
@@ -225,6 +400,13 @@ Alpine.data('captainhooks', () => ({
 		lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	},
 
+	/**
+	 * Toggle live mode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	toggleLiveMode() {
 		this.modal.liveMode = ! this.modal.liveMode;
 		if(this.modal.liveMode) {
@@ -234,6 +416,14 @@ Alpine.data('captainhooks', () => ({
 		}
 	},
 
+	/**
+	 * Activate live mode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object hook Hook to activate live mode.
+	 * @return void
+	 */
 	async activateLiveMode(hook) {
 		await fetch(`${captainHooksData.rest}/livemode`, {
 			method: "POST",
@@ -259,6 +449,15 @@ Alpine.data('captainhooks', () => ({
 		}, 5000);
 	},
 
+	/**
+	 * Update latest logs.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object hook Hook to activate live mode.
+	 * @param string latestLog Latest log date.
+	 * @return void
+	 */
 	async updateLatestLogs(hook, latestLog) {
 		const response = await fetch(`${captainHooksData.rest}/livemode/logs`, {
 			method: "POST",
@@ -288,6 +487,13 @@ Alpine.data('captainhooks', () => ({
 		return latestLog;
 	},
 
+	/**
+	 * Close modal.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	close() {
 		this.showModal = false;
 		this.modal.tab = '';
@@ -295,6 +501,13 @@ Alpine.data('captainhooks', () => ({
 		clearInterval(this.liveModeInterval);
 	},
 
+	/**
+	 * Close preview modal.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	closePreview() {
 		this.showPreviewModal = false;
 		this.showModal = true;

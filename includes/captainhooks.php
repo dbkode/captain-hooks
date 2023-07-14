@@ -2,13 +2,12 @@
 /**
  * Main CaptainHooks class file
  *
- * @package QuickAL
+ * @package CaptainHooks
  * @subpackage Core
  * @since 1.0.0
  */
 namespace CAPTAINHOOKS;
 
-use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 
@@ -173,6 +172,14 @@ final class Captainhooks {
 		return rest_ensure_response( $hooks );
 	}
 
+	/**
+	 * Refresh hooks.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function rest_refresh( $request ) {
 		$path = $request->get_param( 'path' );
 		$hooks = $this->get_path_hooks( $path, true );
@@ -180,6 +187,14 @@ final class Captainhooks {
 		return rest_ensure_response( $hooks );
 	}
 
+	/**
+	 * Preview file.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function rest_preview( $request ) {
 		$path = $request->get_param( 'path' );
 		$file = $request->get_param( 'file' );
@@ -196,6 +211,14 @@ final class Captainhooks {
 		);
 	}
 
+	/**
+	 * Live mode.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function rest_livemode( $request ) {
 		global $wpdb;
 		$hook = $request->get_param( 'hook' );
@@ -232,6 +255,14 @@ final class Captainhooks {
 		return rest_ensure_response(true);
 	}
 
+	/**
+	 * Live mode logs.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function rest_livemode_logs( $request ) {
 		global $wpdb;
 		$hook = $request->get_param( 'hook' );
@@ -254,6 +285,16 @@ final class Captainhooks {
 		return rest_ensure_response( $logs );
 	}
 
+	/**
+	 * Get hooks for a path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to get hooks for.
+	 * @param bool $force_refresh Whether to force refresh hooks.
+	 * @param bool $to_cache Whether to cache hooks.
+	 * @return array Hooks.
+	 */
 	public function get_path_hooks( $path, $force_refresh = false, $to_cache = true ) {
 		$hooks = $force_refresh ? [] : $this->get_cached_hooks( $path );
 		if( $force_refresh || ( empty( $hooks['actions'] ) && empty( $hooks['filters'] ) ) ) {
@@ -272,6 +313,14 @@ final class Captainhooks {
 		];
 	}
 
+	/**
+	 * Get cached hooks for a path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to get cached hooks for.
+	 * @return array Hooks.
+	 */
 	public function get_cached_hooks( $path ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'captainhooks_hooks';
@@ -302,6 +351,14 @@ final class Captainhooks {
 		];
 	}
 
+	/**
+	 * Cache hooks for a path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to cache hooks for.
+	 * @param array $hooks Hooks to cache.
+	 */
 	public function cache_hooks( $path, $hooks ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'captainhooks_hooks';
@@ -348,6 +405,14 @@ final class Captainhooks {
 		}
 	}
 
+	/**
+	 * Generate hooks for a path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to generate hooks for.
+	 * @return array Hooks.
+	 */
 	public function generate_path_hooks( $path ) {
 		$files = $this->get_folder_phps( $path );
 		$actions = array();
@@ -376,6 +441,14 @@ final class Captainhooks {
 		];
 	}
 
+	/**
+	 * Get hooks from code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $code Code to get hooks for.
+	 * @return array Hooks.
+	 */
 	public function get_hooks( $code ) {
 		$parser = ( new ParserFactory )->create( ParserFactory::PREFER_PHP7 );
 		$stmts = $parser->parse( $code );
@@ -390,6 +463,14 @@ final class Captainhooks {
 		];
 	}
 
+	/**
+	 * Get all PHP files in a folder.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to get PHP files for.
+	 * @return array PHP files.
+	 */
 	public function get_folder_phps( $path ) {
 		$files = [];
 
@@ -426,6 +507,14 @@ final class Captainhooks {
 		return $files;
 	}
 
+	/**
+	 * Reduce and sort hooks.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $hooks Hooks to reduce and sort.
+	 * @return array Reduced and sorted hooks.
+	 */
 	public function reduce_and_sort( $hooks ) {
 		// add sample
 		$hooks = array_map( function( $hook ) {
@@ -547,6 +636,11 @@ final class Captainhooks {
 		return $links;
 	}
 
+	/**
+	 * Load live mode hooks.
+	 *
+	 * @since 1.0.0
+	 */
 	public function load_live_mode_hooks() {
 		global $wpdb;
 		// get all hooks where expiry is in the future
@@ -566,6 +660,11 @@ final class Captainhooks {
 		}
 	}
 
+	/**
+	 * Live mode action/filter callback.
+	 *
+	 * @since 1.0.0
+	 */
 	public function live_mode_action_callback() {
 		global $wpdb;
 
