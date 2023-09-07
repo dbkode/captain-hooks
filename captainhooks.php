@@ -5,7 +5,7 @@
  * Description: A description
  * Version:     1.0.0
  * Author:      dbeja
- * Text Domain: captain-hooks
+ * Text Domain: captainhooks
  * Domain Path: /languages
  */
 

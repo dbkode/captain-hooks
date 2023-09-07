@@ -197,7 +197,6 @@ Alpine.data('captainhooks', () => ({
 	get shortcodes_filtered() {
 		return this.hooks.shortcodes.map(shortcode => {
 			shortcode.visible = !this.shortcodes_term || shortcode.hook.indexOf(this.shortcodes_term) !== -1;
-			console.log(shortcode);
 			return shortcode;
 		});
 	},

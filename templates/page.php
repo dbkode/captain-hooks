@@ -8,9 +8,13 @@
 	<!-- START PAGE -->
 	<template captainhooks-if="'start' === page">
 		<div>
-			<p>To explore a comprehensive list of hooks and shortcodes associated with a specific item—whether it's a theme, or a plugin—simply click on the item of your choice.</p>
+			<p>
+				<?php esc_html_e( 'Captain Hooks is a plugin that allows you to explore all the hooks (actions, filters and shortcodes) that are available in your WordPress installation.', 'captainhooks' ); ?>
+			</p>
 
-			<h2>Themes</h2>
+			<h2>
+				<?php esc_html_e( 'Themes', 'captainhooks' ); ?>
+			</h2>
 			<table class="widefat">
 				<tbody>
 					<?php $alternate = false; ?>
@@ -27,7 +31,9 @@
 				</tbody>
 			</table>
 
-			<h2>Plugins</h2>
+			<h2>
+				<?php esc_html_e( 'Plugins', 'captainhooks' ); ?>
+			</h2>
 			<table class="widefat">
 				<tbody>
 					<?php $alternate = false; ?>
@@ -51,7 +57,7 @@
 		<div>
 
 			<h2>
-				<a href="#" captainhooks-on:click.prevent="page = 'start'" style="text-decoration: none;">Home</a> &gt;
+				<a href="#" captainhooks-on:click.prevent="page = 'start'" style="text-decoration: none;"><?php esc_html_e( 'Home', 'captainhooks' ); ?></a> &gt;
 				<span captainhooks-text="type"></span> &gt; <span captainhooks-text="folder"></span>
 				<a href="#" captainhooks-on:click.prevent="refreshHooks" style="text-decoration: none;" title="Reload hooks">
 					<span class="dashicons dashicons-image-rotate"></span>
@@ -61,27 +67,27 @@
 			<!-- Tabs -->
 			<div class="nav-tab-wrapper">
 				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'actions'" captainhooks-bind:class="{'nav-tab-active': 'actions' === tab}">
-					Actions (<span captainhooks-text="hooks.actions.length"></span>)
+				<?php esc_html_e( 'Actions', 'captainhooks' ); ?> (<span captainhooks-text="hooks.actions.length"></span>)
 				</a>
 				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'filters'" captainhooks-bind:class="{'nav-tab-active': 'filters' === tab}">
-					Filters (<span captainhooks-text="hooks.filters.length"></span>)
+				<?php esc_html_e( 'Filters', 'captainhooks' ); ?> (<span captainhooks-text="hooks.filters.length"></span>)
 				</a>
 				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'shortcodes'" captainhooks-bind:class="{'nav-tab-active': 'shortcodes' === tab}">
-					Shortcodes (<span captainhooks-text="hooks.shortcodes.length"></span>)
+				<?php esc_html_e( 'Shortcodes', 'captainhooks' ); ?> (<span captainhooks-text="hooks.shortcodes.length"></span>)
 				</a>
 			</div>
 
 			<!-- Loading Spinner -->
 			<template captainhooks-if="'loading' === tab">
 				<div class="wrap">
-					<h3>Analysing <span captainhooks-text="type"></span> files...<span class="spinner is-active" style="float: none;"></span></h3>
+					<h3><?php esc_html_e( 'Analysing theme/plugin files...', 'captainhooks' ); ?><span class="spinner is-active" style="float: none;"></span></h3>
 				</div>
 			</template>
 
 			<!-- Actions -->
 			<template captainhooks-if="'actions' === tab">
 				<div class="wrap">
-					<input type="text" captainhooks-model="actions_term" placeholder="Filter actions..." class="regular-text" />
+					<input type="text" captainhooks-model="actions_term" placeholder="<?php esc_html_e( 'Filter actions...', 'captainhooks' ); ?>" class="regular-text" />
 					<br><br>
 					<table class="widefat"><tbody>
 						<template captainhooks-for="(action, actionIndex) in actions_filtered">
@@ -98,7 +104,7 @@
 			<!-- Filters -->
 			<template captainhooks-if="'filters' === tab">
 				<div class="wrap">
-					<input type="text" captainhooks-model="filters_term" placeholder="Filter filters..." class="regular-text" />
+					<input type="text" captainhooks-model="filters_term" placeholder="<?php esc_html_e( 'Filter filters...', 'captainhooks' ); ?>" class="regular-text" />
 					<br><br>
 					<table class="widefat"><tbody>
 						<template captainhooks-for="(filter, filterIndex) in filters_filtered">
@@ -115,7 +121,7 @@
 			<!-- Shortcodes -->
 			<template captainhooks-if="'shortcodes' === tab">
 				<div class="wrap">
-					<input type="text" captainhooks-model="shortcodes_term" placeholder="Filter shortcodes..." class="regular-text" />
+					<input type="text" captainhooks-model="shortcodes_term" placeholder="<?php esc_html_e( 'Filter shortcodes...', 'captainhooks' ); ?>" class="regular-text" />
 					<br><br>
 					<table class="widefat"><tbody>
 						<template captainhooks-for="(shortcode, shortcodeIndex) in shortcodes_filtered">
@@ -141,13 +147,13 @@
 				<!-- Tabs -->
 				<div class="nav-tab-wrapper">
 					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('usages')" captainhooks-bind:class="{'nav-tab-active': 'usages' === modal.tab}">
-						Usages
+						<?php esc_html_e( 'Usages', 'captainhooks' ); ?>
 					</a>
 					<a href="#" class="nav-tab" captainhooks-show="'shortcodes' !== tab" captainhooks-on:click.prevent="showTab('sample')" captainhooks-bind:class="{'nav-tab-active': 'sample' === modal.tab}">
-						Sample
+						<?php esc_html_e( 'Sample', 'captainhooks' ); ?>
 					</a>
 					<a href="#" class="nav-tab" captainhooks-show="'shortcodes' !== tab" captainhooks-on:click.prevent="showTab('live')" captainhooks-bind:class="{'nav-tab-active': 'live' === modal.tab}">
-						Live Mode
+						<?php esc_html_e( 'Live Mode', 'captainhooks' ); ?>
 					</a>
 				</div>
 
@@ -164,7 +170,7 @@
 								<!-- Show usage params -->
 								<template captainhooks-if="'shortcodes' === tab && usage.params.length">
 									<div>
-										<strong>Params:</strong>
+										<strong><?php esc_html_e( 'Params:', 'captainhooks' ); ?></strong>
 										<ul>
 											<template captainhooks-for="param in usage.params">
 												<li captainhooks-text="'- ' + param"></li>
@@ -188,9 +194,9 @@
 				<!-- Live -->
 				<template captainhooks-if="'live' === modal.tab">
 					<div class="wrap captainhooks-tab">
-						<p>Turn Live Mode On to log all arguments of this hook when it's triggered.</p>
+						<p><?php esc_html_e( "Turn Live Mode On to log all arguments of this hook when it's triggered.", 'captainhooks' ); ?></p>
 						<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
-							<span captainhooks-text="modal.live ? 'Live Mode On' : 'Live Mode Off'"></span>
+							<span captainhooks-text="modal.live ? '<?php esc_html_e( 'Live Mode On', 'captainhooks' ); ?>' : '<?php esc_html_e( 'Live Mode Off', 'captainhooks' ); ?>'"></span>
 						</button>
 						<br><br>
 						<div id="captainhooks-live" class="captainhooks-live" captainhooks-html="modal.live"></div>
@@ -204,9 +210,9 @@
 	<!-- PREVIEW MODAL -->
 	<template captainhooks-if="showPreviewModal">
 		<div class="captainhooks-modal">
-			<div class="captainhooks-inside">
+			<div class="captainhooks-inside" captainhooks-on:click.outside="closePreview">
 				<button type="button" class="notice-dismiss" captainhooks-on:click.prevent="closePreview"></button>
-				<h2 class="title">Preview: <span captainhooks-text="preview.title"></span></h2>
+				<h2 class="title"><?php esc_html_e( 'Preview:', 'captainhooks' ); ?> <span captainhooks-text="preview.title"></span></h2>
 				<pre><code id="captainhooks-preview-code" class="language-php" captainhooks-html="preview.code"></code></pre>
 			</div>
 		</div>
