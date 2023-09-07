@@ -1,0 +1,118 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Captain Hooks\n"
+"POT-Creation-Date: 2023-09-07 17:32+0100\n"
+"PO-Revision-Date: 2023-09-07 17:30+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.3.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: captainhooks.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+"X-Poedit-SearchPathExcluded-2: node_modules\n"
+
+#. Plugin Name of the plugin/theme
+#: includes/captainhooks.php:634 includes/captainhooks.php:635
+#: templates/page.php:3
+msgid "Captain Hooks"
+msgstr ""
+
+#: includes/captainhooks.php:676
+msgid "Settings"
+msgstr ""
+
+#. Description of the plugin/theme
+#: templates/page.php:12
+msgid ""
+"Captain Hooks is a plugin that allows you to explore all the hooks (actions, "
+"filters and shortcodes) that are available in your WordPress installation."
+msgstr ""
+
+#: templates/page.php:16
+msgid "Themes"
+msgstr ""
+
+#: templates/page.php:35
+msgid "Plugins"
+msgstr ""
+
+#: templates/page.php:60
+msgid "Home"
+msgstr ""
+
+#: templates/page.php:70
+msgid "Actions"
+msgstr ""
+
+#: templates/page.php:73
+msgid "Filters"
+msgstr ""
+
+#: templates/page.php:76
+msgid "Shortcodes"
+msgstr ""
+
+#: templates/page.php:83
+msgid "Analysing theme/plugin files..."
+msgstr ""
+
+#: templates/page.php:90
+msgid "Filter actions..."
+msgstr ""
+
+#: templates/page.php:107
+msgid "Filter filters..."
+msgstr ""
+
+#: templates/page.php:124
+msgid "Filter shortcodes..."
+msgstr ""
+
+#: templates/page.php:150
+msgid "Usages"
+msgstr ""
+
+#: templates/page.php:153
+msgid "Sample"
+msgstr ""
+
+#: templates/page.php:156
+msgid "Live Mode"
+msgstr ""
+
+#: templates/page.php:173
+msgid "Params:"
+msgstr ""
+
+#: templates/page.php:197
+msgid ""
+"Turn Live Mode On to log all arguments of this hook when it's triggered."
+msgstr ""
+
+#: templates/page.php:199
+msgid "Live Mode On"
+msgstr ""
+
+#: templates/page.php:199
+msgid "Live Mode Off"
+msgstr ""
+
+#: templates/page.php:215
+msgid "Preview:"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "dbeja"
+msgstr ""

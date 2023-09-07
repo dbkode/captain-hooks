@@ -1,8 +1,7 @@
 <?php
 /**
  * Plugin Name: Captain Hooks
- * Plugin URI:  captain-hooks.com
- * Description: A description
+ * Description: Captain Hooks is a plugin that allows you to explore all the hooks (actions, filters and shortcodes) that are available in your WordPress installation.
  * Version:     1.0.0
  * Author:      dbeja
  * Text Domain: captainhooks
