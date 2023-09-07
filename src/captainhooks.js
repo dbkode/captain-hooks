@@ -64,7 +64,8 @@ Alpine.data('captainhooks', () => ({
 	 */
 	hooks: {
 		actions: [],
-		filters: []
+		filters: [],
+		shortcodes: []
 	},
 
 	/**
@@ -93,6 +94,15 @@ Alpine.data('captainhooks', () => ({
 	 * @type string
 	 */
 	filters_term: '',
+
+	/**
+	 * Search term for shortcodes.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type string
+	 */
+	shortcodes_term: '',
 
 	/**
 	 * Is modal visible.
@@ -178,6 +188,21 @@ Alpine.data('captainhooks', () => ({
 	},
 
 	/**
+	 * Get filtered shortcodes.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array
+	 */
+	get shortcodes_filtered() {
+		return this.hooks.shortcodes.map(shortcode => {
+			shortcode.visible = !this.shortcodes_term || shortcode.hook.indexOf(this.shortcodes_term) !== -1;
+			console.log(shortcode);
+			return shortcode;
+		});
+	},
+
+	/**
 	 * Init.
 	 *
 	 * Initializes the AlpineJS instance.
@@ -207,7 +232,8 @@ Alpine.data('captainhooks', () => ({
 		this.tab = 'loading';
 		this.hooks = {
 			actions: [],
-			filters: []
+			filters: [],
+			shortcodes: []
 		};
 		this.page = 'hooks';
 		// fetch hooks
@@ -224,7 +250,8 @@ Alpine.data('captainhooks', () => ({
 		const responseJson = await response.json();
 		this.hooks = {
 			actions: responseJson.actions,
-			filters: responseJson.filters
+			filters: responseJson.filters,
+			shortcodes: responseJson.shortcodes
 		};
 		this.tab = 'actions';
 	},
@@ -252,7 +279,8 @@ Alpine.data('captainhooks', () => ({
 		const responseJson = await response.json();
 		this.hooks = {
 			actions: responseJson.actions,
-			filters: responseJson.filters
+			filters: responseJson.filters,
+			shortcodes: responseJson.shortcodes
 		};
 		this.tab = 'actions';
 	},
@@ -295,7 +323,7 @@ Alpine.data('captainhooks', () => ({
 	 * @return void
 	 */
 	async openModal(type, hookIndex) {
-		this.modal.type = 'actions' === type ? 'Action' : 'Filter';
+		this.modal.type = 'actions' === type ? 'Action' : 'filters' === type ? 'Filter' : 'Shortcode';
 		this.modal.title = this.hooks[type][hookIndex].hook;
 		this.modal.tab = 'usages';
 		this.modal.hook = this.hooks[type][hookIndex];

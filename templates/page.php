@@ -8,17 +8,7 @@
 	<!-- START PAGE -->
 	<template captainhooks-if="'start' === page">
 		<div>
-			<p>To explore a comprehensive list of hooks associated with a specific item—whether it's a core feature, a theme, or a plugin—simply click on the item of your choice.</p>
-			<h2>Core</h2>
-			<table class="widefat">
-				<tbody>
-					<tr class="alternate">
-						<td class="row-title">
-							<a href="" captainhooks-on:click.prevent="loadHooks('core')">Core</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<p>To explore a comprehensive list of hooks and shortcodes associated with a specific item—whether it's a theme, or a plugin—simply click on the item of your choice.</p>
 
 			<h2>Themes</h2>
 			<table class="widefat">
@@ -76,6 +66,9 @@
 				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'filters'" captainhooks-bind:class="{'nav-tab-active': 'filters' === tab}">
 					Filters (<span captainhooks-text="hooks.filters.length"></span>)
 				</a>
+				<a href="" class="nav-tab" captainhooks-on:click.prevent="tab = 'shortcodes'" captainhooks-bind:class="{'nav-tab-active': 'shortcodes' === tab}">
+					Shortcodes (<span captainhooks-text="hooks.shortcodes.length"></span>)
+				</a>
 			</div>
 
 			<!-- Loading Spinner -->
@@ -119,6 +112,23 @@
 				</div>
 			</template>
 
+			<!-- Shortcodes -->
+			<template captainhooks-if="'shortcodes' === tab">
+				<div class="wrap">
+					<input type="text" captainhooks-model="shortcodes_term" placeholder="Filter shortcodes..." class="regular-text" />
+					<br><br>
+					<table class="widefat"><tbody>
+						<template captainhooks-for="(shortcode, shortcodeIndex) in shortcodes_filtered">
+						<tr class="alternate" captainhooks-show="shortcode.visible">
+							<td class="row-title">
+								[<a href="" captainhooks-on:click.prevent="openModal('shortcodes', shortcodeIndex)" captainhooks-text="shortcode.hook"></a>]
+							</td>
+						</tr>
+						</template>
+					</tbody></table>
+				</div>
+			</template>
+
 		</div>
 	</template>
 
@@ -133,13 +143,10 @@
 					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('usages')" captainhooks-bind:class="{'nav-tab-active': 'usages' === modal.tab}">
 						Usages
 					</a>
-					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('docblock')" captainhooks-bind:class="{'nav-tab-active': 'docblock' === modal.tab}">
-						DocBlock
-					</a>
-					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('sample')" captainhooks-bind:class="{'nav-tab-active': 'sample' === modal.tab}">
+					<a href="#" class="nav-tab" captainhooks-show="'shortcodes' !== tab" captainhooks-on:click.prevent="showTab('sample')" captainhooks-bind:class="{'nav-tab-active': 'sample' === modal.tab}">
 						Sample
 					</a>
-					<a href="#" class="nav-tab" captainhooks-on:click.prevent="showTab('live')" captainhooks-bind:class="{'nav-tab-active': 'live' === modal.tab}">
+					<a href="#" class="nav-tab" captainhooks-show="'shortcodes' !== tab" captainhooks-on:click.prevent="showTab('live')" captainhooks-bind:class="{'nav-tab-active': 'live' === modal.tab}">
 						Live Mode
 					</a>
 				</div>
@@ -153,17 +160,21 @@
 								<span class="dashicons dashicons-arrow-right"></span> <span captainhooks-text="usage.file"></span>: <span captainhooks-text="usage.line_start"></span>
 								<a href="#" style="text-decoration: none;" captainhooks-on:click.prevent="preview(usage.file, usage.line_start, usage.line_end)"><span class="dashicons dashicons-media-code"></span></a>
 								<br>
-								<pre><code class="language-php" captainhooks-html="usage.code"></code></pre>
+								<pre><code class="language-php" captainhooks-html="usage.doc_block ? usage.doc_block + '\n' + usage.code : usage.code"></code></pre>
+								<!-- Show usage params -->
+								<template captainhooks-if="'shortcodes' === tab && usage.params.length">
+									<div>
+										<strong>Params:</strong>
+										<ul>
+											<template captainhooks-for="param in usage.params">
+												<li captainhooks-text="'- ' + param"></li>
+											</template>
+										</ul>
+									</div>
+								</template>
 							</li>
 							</template>
 						</ul>
-					</div>
-				</template>
-
-				<!-- DocBlock -->
-				<template captainhooks-if="'docblock' === modal.tab">
-					<div class="wrap captainhooks-tab">
-						<pre><code class="language-php" captainhooks-html="modal.hook.doc_block ? modal.hook.doc_block : 'No DocBlock detected...'"></code></pre>
 					</div>
 				</template>
 

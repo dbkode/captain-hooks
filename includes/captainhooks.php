@@ -306,10 +306,12 @@ final class Captainhooks {
 
 		$actions = $this->reduce_and_sort( $hooks['actions'] );
 		$filters = $this->reduce_and_sort( $hooks['filters'] );
+		$shortcodes = $this->reduce_and_sort( $hooks['shortcodes'] );
 
 		return [
 			'actions' => $actions,
 			'filters' => $filters,
+			'shortcodes' => $shortcodes
 		];
 	}
 
@@ -345,9 +347,20 @@ final class Captainhooks {
 			return $filter;
 		}, $filters );
 
+		$shortcodes = $wpdb->get_results( 
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = '$path' AND type = 'shortcode'" ),
+			ARRAY_A
+		);
+		// map shortcodes and convert params to array
+		$shortcodes = array_map( function( $shortcode ) {
+			$shortcode['params'] = json_decode( $shortcode['params'] );
+			return $shortcode;
+		}, $shortcodes );
+
 		return [
 			'actions' => $actions,
 			'filters' => $filters,
+			'shortcodes' => $shortcodes
 		];
 	}
 
@@ -369,6 +382,7 @@ final class Captainhooks {
 
 		$actions = $hooks['actions'];
 		$filters = $hooks['filters'];
+		$shortcodes = $hooks['shortcodes'];
 
 		$actions = array_map( function( $action ) use ( $path ) {
 			return [
@@ -398,7 +412,21 @@ final class Captainhooks {
 			];
 		}, $filters );
 
-		$hooks = array_merge( $actions, $filters );
+		$shortcodes = array_map( function( $shortcode ) use ( $path ) {
+			return [
+				'hook' => $shortcode['hook'],
+				'type' => 'shortcode',
+				'line_start' => $shortcode['line_start'],
+				'line_end' => $shortcode['line_end'],
+				'code' => $shortcode['code'],
+				'doc_block' => $shortcode['doc_block'],
+				'file' => $shortcode['file'],
+				'params' => json_encode( $shortcode['params'] ),
+				'folder' => $path
+			];
+		}, $shortcodes );
+
+		$hooks = array_merge( $actions, $filters, $shortcodes );
 
 		foreach( $hooks as $hook ) {
 			$wpdb->insert( $table_name, $hook );
@@ -417,6 +445,7 @@ final class Captainhooks {
 		$files = $this->get_folder_phps( $path );
 		$actions = array();
 		$filters = array();
+		$shortcodes = array();
 
 		foreach( $files as $file ) {
 			$code = file_get_contents( $file['full_path'] );
@@ -433,11 +462,18 @@ final class Captainhooks {
 				return $filter;
 			}, $hooks['filters'] );
 			$filters = array_merge( $filters, $filters_new );
+
+			$shortcodes_new = array_map( function( $shortcode ) use ( $file ) {
+				$shortcode['file'] = $file['relative_path'];
+				return $shortcode;
+			}, $hooks['shortcodes'] );
+			$shortcodes = array_merge( $shortcodes, $shortcodes_new );
 		}
 
 		return [
 			'actions' => $actions,
 			'filters' => $filters,
+			'shortcodes' => $shortcodes
 		];
 	}
 
@@ -459,7 +495,8 @@ final class Captainhooks {
 
 		return [
 			'actions' => $visitor->actions,
-			'filters' => $visitor->filters
+			'filters' => $visitor->filters,
+			'shortcodes' => $visitor->shortcodes
 		];
 	}
 
@@ -518,6 +555,11 @@ final class Captainhooks {
 	public function reduce_and_sort( $hooks ) {
 		// add sample
 		$hooks = array_map( function( $hook ) {
+			if( 'shortcode' === $hook['type'] ) {
+				$hook['sample'] = '';
+				$hook['num_args'] = 1;
+				return $hook;
+			}
 			$params = $hook['params'];
 			$args = array_slice( $params, 1 );
 			$args_str = implode( ', ', $args );
