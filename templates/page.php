@@ -1,9 +1,9 @@
-<div class="wrap">
+<div class="wrap captainhooks-wrap">
 <h1>
 	<?php esc_html_e( 'Captain Hooks', 'captainhooks' ); ?>
 </h1>
 
-<div id="captainhooks-wrapper" captainhooks-data="captainhooks">
+<div captainhooks-data="captainhooks">
 
 	<!-- START PAGE -->
 	<template captainhooks-if="'start' === page">

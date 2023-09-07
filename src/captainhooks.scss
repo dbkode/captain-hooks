@@ -1,3 +1,10 @@
+/* Show icon on background of wrap at top right */
+.captainhooks-wrap {
+	/* background image on top right with 50px width */
+	background: transparent url(../img/icon-128x128.png) no-repeat right top;
+	background-size: 100px;
+}
+
 .captainhooks-modal {
 	position: fixed;
 	top: 0;
