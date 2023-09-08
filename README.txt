@@ -1,22 +1,23 @@
 === Captain Hooks ===
 Contributors: dbeja
-Tags: admin, dashboard, hooks, filters, actions
+Tags: admin, dashboard, hooks, filters, actions, shortcodes
 Donate link: https://www.paypal.com/paypalme/dbkode
 Requires at least: 5.7 or higher
-Tested up to: 6.2
+Tested up to: 6.3.1
 Requires PHP: 7.2 or higher
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Something
-
 == Description ==
-Description
+Captain Hooks is a robust WordPress plugin designed to give developers an in-depth look at all the hooks available in their WordPress environment. Explore actions, filters, and shortcodes like never before!
 
 == Features ==
-* Feature 1
-* Feature 2
+* **Comprehensive Hook Listing**: Easily list and search all hooks (actions and filters) across any theme or plugin installed.
+* **Shortcode Insight**: View all shortcodes, along with their parameters.
+* **Code Implementation Viewer**: Quickly pinpoint where the hooks and shortcodes are implemented within the code.
+* **Sample Codes**: Not sure how to use a hook? Get code samples instantly.
+* **Live Mode**: An advanced feature to monitor actions or filters in real-time and log all its parameters for better debugging.
 
 == Installation ==
 To install this plugin:
@@ -25,16 +26,13 @@ To install this plugin:
 3. Click on the \"Choose file\" button and select the zip file you downloaded in step 1.
 4. Click on \"Install Now\" button.
 5. Once installed, click on the \"Activate Plugin\" button.
-6. ...
-
-== Frequently Asked Questions ==
-= Question =
-Answer
+6. After activation, navigate to `Tools > Captain Hooks`.
+7. Begin exploring the vast array of hooks and shortcodes available across all themes and plugins on your site!
 
 == Screenshots ==
-1. Screenshot 1
-2. Screenshot 2
-3. Screenshot 3
+1. Main screen
+2. List all hooks and shortcodes
+3. Details about a hook
 
 == Changelog ==
 = 1.0 =
