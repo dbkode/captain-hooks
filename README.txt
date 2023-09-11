@@ -33,6 +33,7 @@ To install this plugin:
 1. Main screen
 2. List all hooks and shortcodes
 3. Details about a hook
+4. Details about a shortcode
 
 == Changelog ==
 = 1.0 =
