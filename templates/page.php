@@ -192,16 +192,18 @@
 				</template>
 
 				<!-- Live -->
-				<template captainhooks-if="'live' === modal.tab">
-					<div class="wrap captainhooks-tab">
-						<p><?php esc_html_e( "Turn Live Mode On to log all arguments of this hook when it's triggered.", 'captainhooks' ); ?></p>
-						<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
-							<span captainhooks-text="modal.live ? '<?php esc_html_e( 'Live Mode On', 'captainhooks' ); ?>' : '<?php esc_html_e( 'Live Mode Off', 'captainhooks' ); ?>'"></span>
-						</button>
-						<br><br>
-						<div id="captainhooks-live" class="captainhooks-live" captainhooks-html="modal.live"></div>
+				<div class="wrap captainhooks-tab" captainhooks-show="'live' === modal.tab">
+					<p><?php esc_html_e( "Turn Live Mode On to log all arguments of this hook when it's triggered.", 'captainhooks' ); ?></p>
+					<button captainhooks-on:click.prevent="toggleLiveMode" captainhooks-bind:class="{'button-primary': modal.liveMode, 'button-secondary': ! modal.liveMode}">
+						<span captainhooks-text="modal.liveMode ? '<?php esc_html_e( 'Turn Off', 'captainhooks' ); ?>' : '<?php esc_html_e( 'Turn On', 'captainhooks' ); ?>'"></span>
+					</button>
+					<br><br>
+					<div id="captainhooks-live" class="captainhooks-live">
+						<template captainhooks-for="log in modal.live" captainhooks-bind:key="log.id">
+							<div captainhooks-html="log.html"></div>
+						</template>
 					</div>
-				</template>
+				</div>
 
 			</div>
 		</div>

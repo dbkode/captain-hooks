@@ -125,7 +125,7 @@ Alpine.data('captainhooks', () => ({
 		title: '',
 		tab: 'usages',
 		hook: {},
-		live: '',
+		live: [],
 		liveMode: false
 	},
 
@@ -297,11 +297,6 @@ Alpine.data('captainhooks', () => ({
 			return;
 		}
 
-		if('live' === tab) {
-			this.modal.liveMode = false;
-			this.modal.live = '';
-		}
-
 		this.modal.tab = tab;
 
 		await this.$nextTick();
@@ -466,7 +461,7 @@ Alpine.data('captainhooks', () => ({
 		});
 
 		this.showPreview = true;
-		this.modal.live = "";
+		this.modal.live = [];
 
 		clearInterval(this.liveModeInterval);
 		let latestLog = await this.updateLatestLogs(hook, 0);
@@ -501,13 +496,16 @@ Alpine.data('captainhooks', () => ({
 		const responseJson = await response.json();
 		if(responseJson.length) {
 			const latestDate = responseJson[0].date;
-			responseJson.reverse().forEach(async log => {
-				const text = `<strong>${log.date}</strong><br><div id="captainhooks-log-${log.id}"></div>`;
-				this.modal.live = text + this.modal.live;
+			const logs = responseJson.reverse();
+			for(let i = 0; i < logs.length; i++) {
+				let log = logs[i];
+				const html = `<strong>${log.date}: ${log.hook}</strong><br><div id="captainhooks-log-${log.id}" class="captainhooks-live-log"></div>`;
+				log.html = html;
+				this.modal.live.unshift(log);
 				await this.$nextTick();
 				const ele = document.getElementById(`captainhooks-log-${log.id}`);
 				jv(JSON.parse(log.log), ele, {expanded:false});
-			});
+			};
 
 			return latestDate;
 		}
@@ -524,7 +522,7 @@ Alpine.data('captainhooks', () => ({
 	close() {
 		this.showModal = false;
 		this.modal.tab = '';
-		this.modal.live = '';
+		this.modal.live = [];
 		clearInterval(this.liveModeInterval);
 	},
 

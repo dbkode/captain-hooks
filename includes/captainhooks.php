@@ -728,4 +728,33 @@ final class Captainhooks {
 		$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
 		$wpdb->insert( $table_name, $record );
 	}
+
+	/**
+	 * Live mode filter callback.
+	 *
+	 * @since 1.0.0
+	 */
+	public function live_mode_filter_callback() {
+		global $wpdb;
+
+		$hook = current_filter();
+		$args = func_get_args();
+		$log = [];
+
+		$count = 0;
+		foreach( $args as $arg ) {
+			$count++;
+			$log["arg{$count}"] = $arg;
+		}
+
+		$record = [
+			'hook' => $hook,
+			'type' => 'filter',
+			'log' => json_encode( $log )
+		];
+		$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
+		$wpdb->insert( $table_name, $record );
+
+		return $args[0];
+	}
 }
