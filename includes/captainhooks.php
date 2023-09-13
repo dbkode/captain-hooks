@@ -521,15 +521,7 @@ final class Captainhooks {
 			$full_path = $file->getPathname();
 			$relative_path = str_replace( $path, '', $full_path );
 
-			if ( strpos( $full_path, '/vendor/' ) !== false ) {
-				continue;
-			}
-
-			if ( strpos( $full_path, '/test/' ) !== false ) {
-				continue;
-			}
-
-			if ( strpos( $full_path, '/tests/' ) !== false ) {
+			if (preg_match('/wp-content\/(themes|plugins)\/[^\/]+\/(vendor|test|tests)\//', $full_path)) {
 				continue;
 			}
 
