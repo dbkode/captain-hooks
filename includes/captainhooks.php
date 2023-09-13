@@ -665,7 +665,7 @@ final class Captainhooks {
 	 * @return array Array of links.
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=captainhooks-settings">' . __( 'Settings', 'captainhooks' ) . '</a>';
+		$settings_link = '<a href="tools.php?page=captainhooks-page">' . __( 'Settings', 'captainhooks' ) . '</a>';
 		array_push( $links, $settings_link );
 		return $links;
 	}
