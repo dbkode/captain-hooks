@@ -8,6 +8,8 @@
  * Domain Path: /languages
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 define( 'CAPTAINHOOKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

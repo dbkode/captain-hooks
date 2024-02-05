@@ -1,3 +1,5 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
+
 <div class="wrap captainhooks-wrap">
 <h1>
 	<?php esc_html_e( 'Captain Hooks', 'captainhooks' ); ?>

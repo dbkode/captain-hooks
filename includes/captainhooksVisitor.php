@@ -8,6 +8,8 @@
  */
 namespace CAPTAINHOOKS;
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 
