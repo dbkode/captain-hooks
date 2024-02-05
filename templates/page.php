@@ -21,8 +21,8 @@
 					<?php foreach( $themes as $theme ) : ?>
 						<tr class="<?php echo $alternate ? 'alternate' : ''; ?>">
 							<td class="row-title">
-								<a href="" captainhooks-on:click.prevent="loadHooks('Themes', '<?php echo $theme->get( 'Name' ); ?>', '<?php echo $theme->get_stylesheet_directory(); ?>')">
-									<?php echo $theme->get( 'Name' ); ?>
+								<a href="" captainhooks-on:click.prevent="loadHooks('Themes', '<?php echo esc_html( $theme->get( 'Name' ) ); ?>', '<?php echo esc_url( $theme->get_stylesheet_directory() ); ?>')">
+									<?php echo esc_html( $theme->get( 'Name' ) ); ?>
 								</a>
 							</td>
 						</tr>
@@ -40,8 +40,8 @@
 					<?php foreach( $plugins as $plugin_path => $plugin ) : ?>
 						<tr class="<?php echo $alternate ? 'alternate' : ''; ?>">
 							<td class="row-title">
-								<a href="" captainhooks-on:click.prevent="loadHooks('Plugins', '<?php echo $plugin['Name']; ?>', '<?php echo WP_PLUGIN_DIR . '/' . dirname( $plugin_path ); ?>')">
-									<?php echo $plugin['Name']; ?>
+								<a href="" captainhooks-on:click.prevent="loadHooks('Plugins', '<?php echo esc_html( $plugin['Name'] ); ?>', '<?php echo esc_url( WP_PLUGIN_DIR . '/' . dirname( $plugin_path ) ); ?>')">
+									<?php echo esc_html( $plugin['Name'] ); ?>
 								</a>
 							</td>
 						</tr>
