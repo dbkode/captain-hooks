@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/paypalme/dbkode
 Requires at least: 5.7 or higher
 Tested up to: 6.3.1
 Requires PHP: 7.2 or higher
-Stable tag: 1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
