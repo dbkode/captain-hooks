@@ -235,7 +235,7 @@ final class Captainhooks {
 		// check if hook already exists
 		$table_name = $wpdb->prefix . 'captainhooks_livemode';
 		$hook_exists = $wpdb->get_results( 
-			$wpdb->prepare( "SELECT * FROM % WHERE hook = %s AND type = %s", $table_name, $hook, $type ),
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s", $hook, $type ),
 			ARRAY_A
 		);
 		if( empty( $hook_exists ) ) {
@@ -274,12 +274,12 @@ final class Captainhooks {
 		$table_name = $wpdb->prefix . 'captainhooks_livemode_logs';
 		if( $latest ) {
 			$logs = $wpdb->get_results( 
-				$wpdb->prepare( "SELECT * FROM % WHERE hook = %s AND type = %s AND date > %s ORDER BY date DESC LIMIT 1", $table_name, $hook, $type, $latest ),
+				$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s AND date > %s ORDER BY date DESC LIMIT 1", $hook, $type, $latest ),
 				ARRAY_A
 			);
 		} else {
 			$logs = $wpdb->get_results( 
-				$wpdb->prepare( "SELECT * FROM % WHERE hook = %s AND type = %s ORDER BY date DESC LIMIT 20", $table_name, $hook, $type ),
+				$wpdb->prepare( "SELECT * FROM $table_name WHERE hook = %s AND type = %s ORDER BY date DESC LIMIT 20", $hook, $type ),
 				ARRAY_A
 			);
 		}
@@ -330,7 +330,7 @@ final class Captainhooks {
 		$table_name = $wpdb->prefix . 'captainhooks_hooks';
 
 		$actions = $wpdb->get_results( 
-			$wpdb->prepare( "SELECT * FROM % WHERE folder = '$path' AND type = 'action'", $table_name ),
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = %s AND type = 'action'", $path ),
 			ARRAY_A
 		);
 		// map actions and convert params to array
@@ -340,7 +340,7 @@ final class Captainhooks {
 		}, $actions );
 
 		$filters = $wpdb->get_results( 
-			$wpdb->prepare( "SELECT * FROM % WHERE folder = '$path' AND type = 'filter'", $table_name ),
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = %s AND type = 'filter'", $path ),
 			ARRAY_A
 		);
 		// map filters and convert params to array
@@ -350,7 +350,7 @@ final class Captainhooks {
 		}, $filters );
 
 		$shortcodes = $wpdb->get_results( 
-			$wpdb->prepare( "SELECT * FROM % WHERE folder = '$path' AND type = 'shortcode'", $table_name ),
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE folder = %s AND type = 'shortcode'", $path ),
 			ARRAY_A
 		);
 		// map shortcodes and convert params to array
@@ -379,7 +379,7 @@ final class Captainhooks {
 		$table_name = $wpdb->prefix . 'captainhooks_hooks';
 
 		$wpdb->query( 
-			$wpdb->prepare( "DELETE FROM % WHERE folder = '$path'", $table_name )
+			$wpdb->prepare( "DELETE FROM $table_name WHERE folder = %s", $path )
 		);
 
 		$actions = $hooks['actions'];
@@ -683,7 +683,7 @@ final class Captainhooks {
 		$current_time = current_time('mysql');
 		$table_name = $wpdb->prefix . 'captainhooks_livemode';
 		$hooks = $wpdb->get_results( 
-			$wpdb->prepare( "SELECT * FROM % WHERE expiry > %s", $table_name, $current_time ),
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE expiry > %s", $current_time ),
 			ARRAY_A
 		);
 
