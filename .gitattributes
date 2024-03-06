@@ -1,5 +1,11 @@
 # Items to ignore when downloading a zip
 
+# Exclude vendor binaries and development files
+/vendor/bin/                      export-ignore
+/vendor/**/phpcs.xml.dist.sample  export-ignore
+/.phpunit.result.cache            export-ignore
+/vendor/**/.phpunit.result.cache  export-ignore
+
 # GitHub
 .gitignore            export-ignore
 .gitattributes        export-ignore
@@ -15,11 +21,12 @@ webpack.config.js     export-ignore
 
 # Project specific
 /.wordpress-org/      export-ignore
-/src/                 export-ignore
+# /src/                 export-ignore
 
 # Tests / Other
 /tests/               export-ignore
 phpunit.xml           export-ignore
+.phpunit.result.cache export-ignore
 README.md             export-ignore
 .editorconfig         export-ignore
 .DS_Store*            export-ignore
