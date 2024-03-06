@@ -7,18 +7,18 @@
 /**
  * Dependencies.
  */
-import Alpine from 'alpinejs' 
-import './captainhooks.scss'
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github-dark.css';
-import jv from 'w-jsonview-tree';
+import Alpine from "alpinejs";
+import "./captainhooks.scss";
+import hljs from "highlight.js";
+import "highlight.js/styles/github-dark.css";
+import jv from "w-jsonview-tree";
 
 window.hljs = hljs;
-require('highlightjs-line-numbers.js');
+require("highlightjs-line-numbers.js");
 
-Alpine.prefix('captainhooks-');
+Alpine.prefix("captainhooks-");
 
-Alpine.data('captainhooks', () => ({
+Alpine.data("captainhooks", () => ({
 	/**
 	 * Current page.
 	 *
@@ -26,7 +26,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	page: 'start',
+	page: "start",
 
 	/**
 	 * Current hook type.
@@ -35,7 +35,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	type: '',
+	type: "",
 
 	/**
 	 * Current folder.
@@ -44,7 +44,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	folder: '',
+	folder: "",
 
 	/**
 	 * Current folder path.
@@ -53,7 +53,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	folderPath: '',
+	folderPath: "",
 
 	/**
 	 * List of hooks.
@@ -65,7 +65,7 @@ Alpine.data('captainhooks', () => ({
 	hooks: {
 		actions: [],
 		filters: [],
-		shortcodes: []
+		shortcodes: [],
 	},
 
 	/**
@@ -75,7 +75,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	tab: 'actions',
+	tab: "actions",
 
 	/**
 	 * Search term for actions.
@@ -84,7 +84,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	actions_term: '',
+	actions_term: "",
 
 	/**
 	 * Search term for filters.
@@ -93,7 +93,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	filters_term: '',
+	filters_term: "",
 
 	/**
 	 * Search term for shortcodes.
@@ -102,7 +102,7 @@ Alpine.data('captainhooks', () => ({
 	 *
 	 * @type string
 	 */
-	shortcodes_term: '',
+	shortcodes_term: "",
 
 	/**
 	 * Is modal visible.
@@ -121,12 +121,12 @@ Alpine.data('captainhooks', () => ({
 	 * @type object
 	 */
 	modal: {
-		type: '',
-		title: '',
-		tab: 'usages',
+		type: "",
+		title: "",
+		tab: "usages",
 		hook: {},
 		live: [],
-		liveMode: false
+		liveMode: false,
 	},
 
 	/**
@@ -146,8 +146,8 @@ Alpine.data('captainhooks', () => ({
 	 * @type object
 	 */
 	preview: {
-		title: '',
-		code: ''
+		title: "",
+		code: "",
 	},
 
 	/**
@@ -167,8 +167,9 @@ Alpine.data('captainhooks', () => ({
 	 * @return array
 	 */
 	get actions_filtered() {
-		return this.hooks.actions.map(action => {
-			action.visible = !this.actions_term || action.hook.indexOf(this.actions_term) !== -1;
+		return this.hooks.actions.map((action) => {
+			action.visible =
+				!this.actions_term || action.hook.indexOf(this.actions_term) !== -1;
 			return action;
 		});
 	},
@@ -181,8 +182,9 @@ Alpine.data('captainhooks', () => ({
 	 * @return array
 	 */
 	get filters_filtered() {
-		return this.hooks.filters.map(filter => {
-			filter.visible = !this.filters_term || filter.hook.indexOf(this.filters_term) !== -1;
+		return this.hooks.filters.map((filter) => {
+			filter.visible =
+				!this.filters_term || filter.hook.indexOf(this.filters_term) !== -1;
 			return filter;
 		});
 	},
@@ -195,8 +197,10 @@ Alpine.data('captainhooks', () => ({
 	 * @return array
 	 */
 	get shortcodes_filtered() {
-		return this.hooks.shortcodes.map(shortcode => {
-			shortcode.visible = !this.shortcodes_term || shortcode.hook.indexOf(this.shortcodes_term) !== -1;
+		return this.hooks.shortcodes.map((shortcode) => {
+			shortcode.visible =
+				!this.shortcodes_term ||
+				shortcode.hook.indexOf(this.shortcodes_term) !== -1;
 			return shortcode;
 		});
 	},
@@ -228,31 +232,31 @@ Alpine.data('captainhooks', () => ({
 		this.type = type;
 		this.folder = folder;
 		this.folderPath = path;
-		this.tab = 'loading';
+		this.tab = "loading";
 		this.hooks = {
 			actions: [],
 			filters: [],
-			shortcodes: []
+			shortcodes: [],
 		};
-		this.page = 'hooks';
+		this.page = "hooks";
 		// fetch hooks
 		const response = await fetch(`${captainHooksData.rest}/hooks`, {
 			method: "POST",
 			headers: {
 				"X-WP-Nonce": captainHooksData.nonce,
-				"Content-Type": "application/json;charset=utf-8"
+				"Content-Type": "application/json;charset=utf-8",
 			},
 			body: JSON.stringify({
-				path
-			})
+				path,
+			}),
 		});
 		const responseJson = await response.json();
 		this.hooks = {
 			actions: responseJson.actions,
 			filters: responseJson.filters,
-			shortcodes: responseJson.shortcodes
+			shortcodes: responseJson.shortcodes,
 		};
-		this.tab = 'actions';
+		this.tab = "actions";
 	},
 
 	/**
@@ -263,25 +267,25 @@ Alpine.data('captainhooks', () => ({
 	 * @return void
 	 */
 	async refreshHooks() {
-		this.tab = 'loading';
+		this.tab = "loading";
 		// fetch hooks
 		const response = await fetch(`${captainHooksData.rest}/refresh`, {
 			method: "POST",
 			headers: {
 				"X-WP-Nonce": captainHooksData.nonce,
-				"Content-Type": "application/json;charset=utf-8"
+				"Content-Type": "application/json;charset=utf-8",
 			},
 			body: JSON.stringify({
-				path: this.folderPath
-			})
+				path: this.folderPath,
+			}),
 		});
 		const responseJson = await response.json();
 		this.hooks = {
 			actions: responseJson.actions,
 			filters: responseJson.filters,
-			shortcodes: responseJson.shortcodes
+			shortcodes: responseJson.shortcodes,
 		};
-		this.tab = 'actions';
+		this.tab = "actions";
 	},
 
 	/**
@@ -293,7 +297,7 @@ Alpine.data('captainhooks', () => ({
 	 * @return void
 	 */
 	async showTab(tab) {
-		if(tab === this.modal.tab) {
+		if (tab === this.modal.tab) {
 			return;
 		}
 
@@ -317,9 +321,14 @@ Alpine.data('captainhooks', () => ({
 	 * @return void
 	 */
 	async openModal(type, hookIndex) {
-		this.modal.type = 'actions' === type ? 'Action' : 'filters' === type ? 'Filter' : 'Shortcode';
+		this.modal.type =
+			"actions" === type
+				? "Action"
+				: "filters" === type
+				? "Filter"
+				: "Shortcode";
 		this.modal.title = this.hooks[type][hookIndex].hook;
-		this.modal.tab = 'usages';
+		this.modal.tab = "usages";
 		this.modal.hook = this.hooks[type][hookIndex];
 		this.showModal = true;
 
@@ -343,19 +352,20 @@ Alpine.data('captainhooks', () => ({
 			method: "POST",
 			headers: {
 				"X-WP-Nonce": captainHooksData.nonce,
-				"Content-Type": "application/json;charset=utf-8"
+				"Content-Type": "application/json;charset=utf-8",
 			},
 			body: JSON.stringify({
 				path: this.folderPath,
-				file
-			})
+				file,
+			}),
 		});
 		const responseJson = await response.json();
 
 		this.showPreviewModal = true;
 		this.showModal = false;
 		await this.$nextTick();
-		document.getElementById('captainhooks-preview-code').innerHTML = responseJson.code;
+		document.getElementById("captainhooks-preview-code").innerHTML =
+			responseJson.code;
 		this.preview.title = file;
 		this.highlightCode(line_start, line_end);
 	},
@@ -370,7 +380,7 @@ Alpine.data('captainhooks', () => ({
 	 */
 	viewSample(sample) {
 		this.showPreview = true;
-		document.getElementById('captainhooks-preview-code').textContent = sample;
+		document.getElementById("captainhooks-preview-code").textContent = sample;
 		this.highlightCode(false, false);
 	},
 
@@ -384,7 +394,7 @@ Alpine.data('captainhooks', () => ({
 	 */
 	viewDocBlock(docBlock) {
 		this.showPreview = true;
-		document.getElementById('captainhooks-preview-code').textContent = docBlock;
+		document.getElementById("captainhooks-preview-code").textContent = docBlock;
 		this.highlightCode(false, false);
 	},
 
@@ -403,23 +413,27 @@ Alpine.data('captainhooks', () => ({
 
 		// add line numbers
 		hljs.initLineNumbersOnLoad();
-		
-		if(! line_start ) {
+
+		if (!line_start) {
 			return;
 		}
 		await this.$nextTick();
 
 		// highlight lines
-		for(let l = line_start; l <= line_end; l++) {
-			const linesEl = document.querySelectorAll(`.hljs-ln-line[data-line-number="${l}"]`);
-			linesEl.forEach(lineEl => {
-				lineEl.classList.add('captainhooks-highlight');
+		for (let l = line_start; l <= line_end; l++) {
+			const linesEl = document.querySelectorAll(
+				`.hljs-ln-line[data-line-number="${l}"]`
+			);
+			linesEl.forEach((lineEl) => {
+				lineEl.classList.add("captainhooks-highlight");
 			});
 		}
 
 		// scroll to line
-		const lineEl = document.querySelector(`.hljs-ln-line[data-line-number="${line_start}"]`);
-		lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		const lineEl = document.querySelector(
+			`.hljs-ln-line[data-line-number="${line_start}"]`
+		);
+		lineEl.scrollIntoView({ behavior: "smooth", block: "center" });
 	},
 
 	/**
@@ -430,8 +444,8 @@ Alpine.data('captainhooks', () => ({
 	 * @return void
 	 */
 	toggleLiveMode() {
-		this.modal.liveMode = ! this.modal.liveMode;
-		if(this.modal.liveMode) {
+		this.modal.liveMode = !this.modal.liveMode;
+		if (this.modal.liveMode) {
 			this.activateLiveMode(this.modal.hook);
 		} else {
 			clearInterval(this.liveModeInterval);
@@ -451,13 +465,13 @@ Alpine.data('captainhooks', () => ({
 			method: "POST",
 			headers: {
 				"X-WP-Nonce": captainHooksData.nonce,
-				"Content-Type": "application/json;charset=utf-8"
+				"Content-Type": "application/json;charset=utf-8",
 			},
 			body: JSON.stringify({
 				hook: hook.hook,
 				type: hook.type,
-				num_args: hook.num_args
-			})
+				num_args: hook.num_args,
+			}),
 		});
 
 		this.showPreview = true;
@@ -485,27 +499,27 @@ Alpine.data('captainhooks', () => ({
 			method: "POST",
 			headers: {
 				"X-WP-Nonce": captainHooksData.nonce,
-				"Content-Type": "application/json;charset=utf-8"
+				"Content-Type": "application/json;charset=utf-8",
 			},
 			body: JSON.stringify({
 				hook: hook.hook,
 				type: hook.type,
-				latest: latestLog
-			})
+				latest: latestLog,
+			}),
 		});
 		const responseJson = await response.json();
-		if(responseJson.length) {
+		if (responseJson.length) {
 			const latestDate = responseJson[0].date;
 			const logs = responseJson.reverse();
-			for(let i = 0; i < logs.length; i++) {
+			for (let i = 0; i < logs.length; i++) {
 				let log = logs[i];
 				const html = `<strong>${log.date}: ${log.hook}</strong><br><div id="captainhooks-log-${log.id}" class="captainhooks-live-log"></div>`;
 				log.html = html;
 				this.modal.live.unshift(log);
 				await this.$nextTick();
 				const ele = document.getElementById(`captainhooks-log-${log.id}`);
-				jv(JSON.parse(log.log), ele, {expanded:false});
-			};
+				jv(JSON.parse(log.log), ele, { expanded: false });
+			}
 
 			return latestDate;
 		}
@@ -521,7 +535,7 @@ Alpine.data('captainhooks', () => ({
 	 */
 	close() {
 		this.showModal = false;
-		this.modal.tab = '';
+		this.modal.tab = "";
 		this.modal.live = [];
 		clearInterval(this.liveModeInterval);
 	},
@@ -536,8 +550,7 @@ Alpine.data('captainhooks', () => ({
 	closePreview() {
 		this.showPreviewModal = false;
 		this.showModal = true;
-	}
+	},
+}));
 
-}))
-
-Alpine.start()
+Alpine.start();

@@ -169,6 +169,7 @@ final class Captainhooks {
 	 */
 	public function rest_hooks( $request ) {
 		$path = $request->get_param( 'path' );
+		$path = urldecode( $path );
 		$hooks = $this->get_path_hooks( $path );
 
 		return rest_ensure_response( $hooks );
@@ -184,6 +185,7 @@ final class Captainhooks {
 	 */
 	public function rest_refresh( $request ) {
 		$path = $request->get_param( 'path' );
+		$path = urldecode( $path );
 		$hooks = $this->get_path_hooks( $path, true );
 
 		return rest_ensure_response( $hooks );
@@ -199,7 +201,9 @@ final class Captainhooks {
 	 */
 	public function rest_preview( $request ) {
 		$path = $request->get_param( 'path' );
+		$path = urldecode( $path );
 		$file = $request->get_param( 'file' );
+		$file = urldecode( $file );
 
 		$full_path = $path . $file;
 		$code_raw = file_get_contents( $full_path );
