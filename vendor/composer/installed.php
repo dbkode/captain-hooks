@@ -3,7 +3,7 @@
         'name' => 'dbeja/captain-hooks',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'f8b49be002d4e9faaaaa128bacb0ea413e79c760',
+        'reference' => '4180606e230108b62fe7ca29ca3c890c80a7646f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'dbeja/captain-hooks' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'f8b49be002d4e9faaaaa128bacb0ea413e79c760',
+            'reference' => '4180606e230108b62fe7ca29ca3c890c80a7646f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

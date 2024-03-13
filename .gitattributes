@@ -12,9 +12,7 @@
 /.github/             export-ignore
 
 # Packages / Dependencies
-package.json          export-ignore
 package-lock.json     export-ignore
-composer.json         export-ignore
 composer.lock         export-ignore
 babel.config.json     export-ignore
 webpack.config.js     export-ignore

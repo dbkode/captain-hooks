@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       Captain Hooks
- * Plugin URI:        https://example.com/plugins/the-basics/
- * Description:       HCaptain Hooks is a plugin that allows you to explore all the hooks (actions, filters and shortcodes) that are available in your WordPress installation.
+ * Plugin URI:        https://github.com/dbkode/captain-hooks
+ * Description:       Captain Hooks is a plugin that allows you to explore all the hooks (actions, filters and shortcodes) that are available in your WordPress installation.
  * Version:           1.0.0
  * Requires at least: 5.7
  * Requires PHP:      7.2
  * Author:            dbeja
- * Author URI:        https://author.example.com/
+ * Author URI:        https://github.com/dbeja
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       captain-hooks

@@ -1,35 +1,17 @@
 {
-    "name": "dbeja/captain-hooks",
-    "authors": [
-        {
-            "name": "David Beja",
-            "email": "david.beja@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "CAPTAINHOOKS\\": "includes/"
-        }
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.7",
-        "wp-coding-standards/wpcs": "^2.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "phpunit/phpunit": "^9.6"
-    },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
-    },
-    "scripts": {
-        "lint": [
-            "./vendor/bin/phpcs --standard=WordPress --extensions=php -d error_reporting='E_ALL&~E_DEPRECATED' --ignore=vendor ."
-        ],
-        "test": "./vendor/bin/phpunit",
-        "errors": "tail -f ../../../../../logs/php/error.log"
-    },
-    "require": {
-        "nikic/php-parser": "^4.15"
-    }
+	"name": "dbeja/captain-hooks",
+	"authors": [
+		{
+			"name": "David Beja",
+			"email": "david.beja@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"CAPTAINHOOKS\\": "includes/"
+		}
+	},
+	"require": {
+		"nikic/php-parser": "^4.15"
+	}
 }
