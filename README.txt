@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/paypalme/dbkode
 Requires at least: 5.7
 Tested up to: 6.3.1
 Requires PHP: 7.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Captain Hooks is a WordPress plugin that provides developers with a comprehensive view of all actions, filters, and shortcodes of their environment.
@@ -37,5 +37,8 @@ To install this plugin:
 4. Details about a shortcode
 
 == Changelog ==
-= 1.0 =
+= 1.0.1 =
+* Fixed: WordPress.org warnings
+
+= 1.0.0 =
 * Plugin release
