@@ -1,13 +1,14 @@
 === Captain Hooks ===
 Contributors: dbeja
-Tags: admin, dashboard, hooks, filters, actions, shortcodes
+Tags: admin, hooks, filters, actions, shortcodes
 Donate link: https://www.paypal.com/paypalme/dbkode
-Requires at least: 5.7 or higher
+Requires at least: 5.7
 Tested up to: 6.3.1
-Requires PHP: 7.2 or higher
+Requires PHP: 7.2
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Captain Hooks is a WordPress plugin that provides developers with a comprehensive view of all actions, filters, and shortcodes of their environment.
 
 == Description ==
 Captain Hooks is a robust WordPress plugin designed to give developers an in-depth look at all the hooks available in their WordPress environment. Explore actions, filters, and shortcodes like never before!
