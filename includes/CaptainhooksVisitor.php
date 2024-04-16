@@ -108,10 +108,11 @@ class CaptainhooksVisitor extends NodeVisitorAbstract
         // Check for shortcode_atts
         if ( $node instanceof Node\Expr\FuncCall &&
             $node->name instanceof Node\Name &&
-            $node->name->toString() === 'shortcode_atts' ) {
+            $node->name->toString() === 'shortcode_atts' &&
+            count( $node->args ) > 1 ) {
             $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
-            $hook = $this->get_hook( $node, 2 );
             $code = $this->get_pretty_code( $node );
+            $hook = $this->get_hook( $node, 2 );
             // get params from array of first argument
             $params = [];
             if( $node->args[0]->value instanceof Node\Expr\Array_ ) {
