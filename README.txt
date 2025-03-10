@@ -37,6 +37,9 @@ To install this plugin:
 4. Details about a shortcode
 
 == Changelog ==
+= 1.0.2 =
+* Minor performance improvements
+
 = 1.0.1 =
 * Fixed: WordPress.org warnings
 
