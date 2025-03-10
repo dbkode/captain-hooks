@@ -3,7 +3,7 @@ Contributors: dbeja
 Tags: admin, hooks, filters, actions, shortcodes
 Donate link: https://www.paypal.com/paypalme/dbkode
 Requires at least: 5.7
-Tested up to: 6.3.1
+Tested up to: 6.7
 Requires PHP: 7.2
 Stable tag: 1.0.1
 License: GPLv2 or later
